@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Local Claude Code config (not part of the project)
+.claude/
+
+# OS cruft
+.DS_Store
+Thumbs.db

@@ -1,0 +1,62 @@
+# scientific.mplstyle — single-column, publication-ready matplotlib defaults
+# Usage:  import matplotlib.pyplot as plt; plt.style.use("scientific.mplstyle")
+# See scientific_plotting_conventions.md for the rationale behind each value.
+
+# ---- Figure & export ----
+figure.figsize:        3.5, 2.16          # inches: single column, ~golden ratio
+figure.dpi:            150                 # on-screen rendering
+figure.constrained_layout.use: True
+savefig.dpi:           600                 # raster export at final size
+savefig.bbox:          tight
+savefig.pad_inches:    0.02
+savefig.transparent:   False
+
+# ---- Editable, vector-safe text ----
+pdf.fonttype:          42                  # TrueType (editable), NOT Type 3
+ps.fonttype:           42
+svg.fonttype:          none                # keep text as text in SVG
+
+# ---- Fonts ----
+font.family:           sans-serif
+font.sans-serif:       Arial, Helvetica, DejaVu Sans
+font.size:             7
+axes.titlesize:        8
+axes.labelsize:        7
+xtick.labelsize:       6
+ytick.labelsize:       6
+legend.fontsize:       6
+mathtext.fontset:      dejavusans
+
+# ---- Axes & spines ----
+axes.linewidth:        0.6
+axes.spines.top:       False
+axes.spines.right:     False
+axes.labelpad:         2.0
+axes.titlepad:         4.0
+axes.prop_cycle:       cycler('color', ['0072B2','E69F00','009E73','D55E00','56B4E9','CC79A7','F0E442','000000'])
+
+# ---- Lines & markers ----
+lines.linewidth:       1.0
+lines.markersize:      4
+lines.markeredgewidth: 0.6
+
+# ---- Ticks ----
+xtick.direction:       out
+ytick.direction:       out
+xtick.major.size:      3
+ytick.major.size:      3
+xtick.major.width:     0.6
+ytick.major.width:     0.6
+xtick.minor.visible:   True
+ytick.minor.visible:   True
+
+# ---- Legend & grid ----
+legend.frameon:        False
+legend.handlelength:   1.5
+legend.labelspacing:   0.3
+axes.grid:             False
+grid.linewidth:        0.4
+grid.alpha:            0.4
+
+# ---- Images ----
+image.cmap:            viridis
