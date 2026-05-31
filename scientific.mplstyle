@@ -1,6 +1,6 @@
 # scientific.mplstyle — single-column, publication-ready matplotlib defaults
 # Usage:  import matplotlib.pyplot as plt; plt.style.use("scientific.mplstyle")
-# See scientific_plotting_conventions.md for the rationale behind each value.
+# See README.md for the rationale behind each value.
 
 # ---- Figure & export ----
 figure.figsize:        3.5, 2.16          # inches: single column, ~golden ratio
