@@ -1,25 +1,24 @@
 """
 publisher_page_layouts.py
 =========================
-A 2x3 to-scale schematic of how figures and text sit on the page across
-publishers: A4 journals on the top row, US-Letter on the bottom row.
+Renders ONE to-scale page-layout figure per publisher (so each is large and
+legible), plus a standalone three-typeface specimen. Each per-publisher figure
+shows that journal's page at true column widths, with:
 
-Each page shows, at the publisher's true column width:
-  * paper size, margins / text area (left-margin dimension, left-aligned);
-  * a REAL full-width and part-width figure (sample data, legend, axis labels)
-    whose drawing area is inset so the axis labels stay INSIDE the column;
-    every publisher uses a DIFFERENT figure aspect ratio (w : h shown in the tag);
-  * a figure CAPTION under each panel, in that publisher's house format;
-  * body TEXT, greeked: only the FIRST paragraph is real (with a "9 pt" tag),
-    the rest are rules.
+  * paper size & margins (left-margin dimension, left-aligned);
+  * a full-width MULTI-PANEL figure (a-d) with panel labels in the journal's
+    house style, and a part-/single-column figure — each at a distinct aspect
+    ratio (w:h printed on the panel tag);
+  * a caption under each figure in the journal's house format;
+  * greeked body text (only the first paragraph is real);
+  * a heading line listing the publisher's single/full widths, aspect ratios
+    and panel-label style.
 
-Type is rendered roughly to scale, so the relative sizes (title 16 > body 9 >
-caption 8 > axis label 7 pt) are faithful. The top-right panel sets the SAME
-words and formula in three typefaces (Arial / Times New Roman / Computer Modern),
-aligned on a grid, across Large/Regular/Small + italic/bold/math rows.
+Type is rendered to scale, so title > heading > body > caption > axis-label
+sizes are faithful. A geometric self-check flags any overlap.
 
-A geometric self-check at the end flags any label/text/figure overlap.
-Output: .pdf (vector, embedded fonts) and .png (400 dpi).
+Outputs (per publisher):  layout_<slug>.png / .pdf
+Output (specimen):        typeface_specimen.png / .pdf
 """
 import textwrap
 import numpy as np
@@ -30,7 +29,6 @@ from matplotlib.lines import Line2D
 from matplotlib.font_manager import FontProperties, findfont
 
 WONG = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#56B4E9", "#CC79A7"]
-# inset fonts are sized to scale (7 pt axis label < 9 pt body, etc.)
 mpl.rcParams.update({
     "pdf.fonttype": 42, "ps.fonttype": 42, "svg.fonttype": "none",
     "font.family": "sans-serif",
@@ -58,13 +56,11 @@ FP_ARIAL_B = FontProperties(family="Arial", weight="bold")
 FP_CM = FontProperties(fname=findfont("cmr10"))
 FP_CMB = FontProperties(fname=findfont("cmb10"))
 
-
-# ---------- sample plots (short y-labels so labels fit inside the column) ----
-# translucent white legend box + extra head-room so legends never hide the data
 LG = dict(frameon=True, framealpha=0.78, facecolor="white", edgecolor="none",
           borderpad=0.2, handletextpad=0.3, handlelength=1.0)
 
 
+# ---------- sample plots ------------------------------------------------------
 def _tidy(ax):
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
@@ -191,8 +187,6 @@ pubs = [
     ("Science (AAAS)", "Letter", 216, 279, 55,   183, 3, p_band,  p_scatter, False, "Analysis"),
 ]
 
-# per-publisher figure aspect ratios (w:h) — (full-width fig, part-/single-col fig)
-# every value is distinct so the panels visibly differ in shape
 ASPECT = {
     "Nature":         ((4, 1), (4, 3)),
     "Elsevier":       ((7, 2), (3, 2)),
@@ -204,44 +198,40 @@ ASPECT = {
 
 # per-publisher panel-label house style: (case, parenthesis, bold, position)
 PANELSTYLE = {
-    "Nature":         ("lower", "none", True,  "tl"),     # bold  a
-    "Elsevier":       ("lower", "()",   False, "tl"),     #       (a)
-    "Springer":       ("lower", "()",   True,  "tl"),     # bold  (a)
-    "IEEE":           ("lower", "()",   False, "below"),  #       (a)  under panel
-    "Wiley":          ("upper", "()",   False, "tl"),     #       (A)
-    "Science (AAAS)": ("upper", "none", True,  "tl"),     # bold  A
+    "Nature":         ("lower", "none", True,  "tl"),
+    "Elsevier":       ("lower", "()",   False, "tl"),
+    "Springer":       ("lower", "()",   True,  "tl"),
+    "IEEE":           ("lower", "()",   False, "below"),
+    "Wiley":          ("upper", "()",   False, "tl"),
+    "Science (AAAS)": ("upper", "none", True,  "tl"),
 }
 
 
 def panel_text(i, case, paren):
     ch = chr((65 if case == "upper" else 97) + i)
-    if paren == "()":
-        return f"({ch})"
-    if paren == ")":
-        return f"{ch})"
-    return ch
+    return f"({ch})" if paren == "()" else ch
+
+
+def panel_desc(name):
+    case, paren, bold, pos = PANELSTYLE[name]
+    ch = "A" if case == "upper" else "a"
+    s = f"({ch})" if paren == "()" else ch
+    if bold:
+        s = "bold " + s
+    if pos == "below":
+        s += " (below panels)"
+    return s
+
 
 MT, MB = 24, 22
-PL, PB, PR, PT_ = 18, 9, 2, 3             # inset paddings: keep axis labels in column
-PWMAX, PHMAX = 216, 297
-GAPX, GAPY = 40, 72
-YB = [PHMAX - 18 + GAPY, 0]
+PL, PB, PR, PT_ = 18, 9, 2, 3
 
-fig, ax = plt.subplots(figsize=(14.5, 14.8))
-ax.set_aspect("equal"); ax.axis("off")
-CHECKS = []                      # (tag, inset, col_left, col_right) -> labels in column
-BODYBOX = []                     # (page, real-text, col_left, col_right)
-STRUCT = []                      # (page, text)  structural labels for overlap audit
-INSETS = []                      # (page, axes)  figures for overlap audit
-HDRS = []                        # publisher-name headers
-CAPS = []                        # deferred caption requests (need a renderer to lay out)
-CUR = [0]                        # current page index
-REAL = [False]                   # has the one real paragraph been shown on this page?
+CHECKS, BODYBOX, STRUCT, INSETS, CAPS = [], [], [], [], []
+CUR, REAL = [0], [False]
+ax = fig = None                     # reassigned per figure
 
 
 def fill_body(x0, ytop, ybot, colw_mm, fs=3.4, lh=3.9, size_tag=None):
-    """Greeked body: ONLY the first paragraph on the page is real text; every
-    later paragraph is light rules. `size_tag` is printed after the real lines."""
     L = textwrap.wrap(BODY, max(14, int(colw_mm * 0.55)))
     y = ytop
     while y > ybot:
@@ -251,16 +241,16 @@ def fill_body(x0, ytop, ybot, colw_mm, fs=3.4, lh=3.9, size_tag=None):
             if y <= ybot:
                 return
             last = k == plen - 1
-            if real and k < 2:                                   # 2 real opening lines
+            if real and k < 2:
                 t = ax.text(x0, y, L[k % len(L)], fontsize=fs, va="top", ha="left",
                             color=BODY_C, zorder=2)
                 BODYBOX.append((CUR[0], t, x0, x0 + colw_mm))
                 REAL[0] = True
-            elif real and k == 2 and size_tag:                   # in-place size tag
+            elif real and k == 2 and size_tag:
                 tg = ax.text(x0, y, size_tag, fontsize=3.0, va="top", ha="left",
                              color=ACCENT, style="italic", zorder=2)
                 STRUCT.append((CUR[0], tg))
-            else:                                                # rule (greeked line)
+            else:
                 frac = rng.uniform(0.36, 0.6) if last else rng.uniform(0.9, 1.0)
                 yr = y - lh * 0.45
                 ax.add_line(Line2D([x0, x0 + colw_mm * frac], [yr, yr], lw=1.3,
@@ -275,9 +265,8 @@ def S(idx, *a, **k):
     return t
 
 
-def draw_page(idx, col, row, name, paper, PW, PH, single, double, ncol, dfn, sfn, ok, heading):
-    CUR[0] = idx; REAL[0] = False
-    X0, Yb = col * (PWMAX + GAPX), YB[row]
+def draw_page(idx, X0, Yb, name, paper, PW, PH, single, double, ncol, dfn, sfn, ok, heading):
+    CUR[0] = idx
     gx = lambda x: X0 + x
     gy = lambda y: Yb + y
     ML = (PW - double) / 2
@@ -295,17 +284,16 @@ def draw_page(idx, col, row, name, paper, PW, PH, single, double, ncol, dfn, sfn
     one = ncol == 1
     bodyw = (tx1 - tx0) if one else single
     fx1 = tx0 + ((tx1 - tx0) - single) / 2 if one else cols[0]
-    (adw, adh), (asw, ash) = ASPECT[name]                       # figure aspect ratios
-    dwid = (tx1 - tx0) - PL - PR                                # full-width drawing box
-    h2 = dwid * adh / adw + PB + PT_                            # -> slot height
-    swid = single - PL - PR                                     # part-width drawing box
+    (adw, adh), (asw, ash) = ASPECT[name]
+    dwid = (tx1 - tx0) - PL - PR
+    h2 = dwid * adh / adw + PB + PT_
+    swid = single - PL - PR
     h1 = swid * ash / asw + PB + PT_
     d_tag = (f"full width · {double:g} mm · {adw}:{adh}" if one
              else f"2-column · {double:g} mm · {adw}:{adh}")
     s_tag = (f"part width · {single:g} mm · {asw}:{ash}" if one
              else f"1-col · {single:g} mm · {asw}:{ash}")
 
-    # ---- vertical stack, top-down with explicit gaps and caption slots ---------
     y_title = ty1
     S(idx, gx(tx0), gy(y_title), "Sample Article Title", fontsize=6.0,
       fontweight="bold", color=INK, va="top", zorder=4)
@@ -315,7 +303,6 @@ def draw_page(idx, col, row, name, paper, PW, PH, single, double, ncol, dfn, sfn
 
     fig2_top = y_tag2 - 5.0
     fig2_bot = fig2_top - h2
-    # full-width figure = a row of sub-panels with journal-styled panel labels (a-d)
     npan, pgap = 4, 3.0
     prow_h = h2 - PB - PT_
     pw = (dwid - (npan - 1) * pgap) / npan
@@ -347,8 +334,7 @@ def draw_page(idx, col, row, name, paper, PW, PH, single, double, ncol, dfn, sfn
       fontweight="bold", va="top", zorder=4)
     fig1_top = y_tag1 - 5.0
     fig1_bot = fig1_top - h1
-    sa = ax.inset_axes([gx(fx1 + PL), gy(fig1_bot + PB),
-                        swid, h1 - PB - PT_], transform=ax.transData)
+    sa = ax.inset_axes([gx(fx1 + PL), gy(fig1_bot + PB), swid, h1 - PB - PT_], transform=ax.transData)
     sa.set_zorder(3); sfn(sa)
     CHECKS.append((name + " 1-col", sa, X0 + fx1, X0 + fx1 + single)); INSETS.append((idx, sa))
     y_cap2 = fig1_bot - 3.0
@@ -358,7 +344,6 @@ def draw_page(idx, col, row, name, paper, PW, PH, single, double, ncol, dfn, sfn
     for j in range(1, ncol):
         fill_body(gx(cols[j]), gy(y_head), gy(MB), single)
 
-    # left-margin dimension arrow, LEFT-ALIGNED label inside the page
     ym = ty1 + 10
     ax.annotate("", (gx(0), gy(ym)), (gx(ML), gy(ym)), zorder=5,
                 arrowprops=dict(arrowstyle="<|-|>", color=ACCENT, lw=0.8,
@@ -366,95 +351,12 @@ def draw_page(idx, col, row, name, paper, PW, PH, single, double, ncol, dfn, sfn
     S(idx, gx(0), gy(ym) + 3.0, f"{ML:.0f} mm", ha="left", va="bottom",
       fontsize=5.2, color=ACCENT)
 
-    # publisher name — uniform colour, close to the page
-    HDRS.append(ax.text(gx(PW / 2), gy(PH) + 6, name, ha="center", va="bottom",
-                fontsize=10.0, fontweight="bold", color=INK))
     S(idx, gx(PW / 2), gy(0) - 11, f"{paper} · {PW:g} × {PH:g} mm", ha="center",
       va="top", fontsize=6.8, color=INK, fontweight="bold")
     _info = "single-column text" if one else f"{ncol}-column · gutter {gut:.0f} mm"
     S(idx, gx(PW / 2), gy(0) - 20, _info, ha="center", va="top", fontsize=6.0, color=SUB)
 
 
-for i, p in enumerate(pubs):
-    draw_page(i, i % 3, i // 3, *p)
-
-totalW = 3 * PWMAX + 2 * GAPX
-top = YB[0] + PHMAX
-ax.set_xlim(-16, totalW + 16)
-ax.set_ylim(-60, top + 108)
-
-# ---- header: title + subtitles + representative type sizes (left) ------------
-LEFTT = [
-    ax.text(-16, top + 96, "Paper size, margins, figures & typefaces — to scale across publishers",
-            fontsize=14, fontweight="bold", color=INK, va="top"),
-    ax.text(-16, top + 80, "Top row A4, bottom row US Letter. Real full- and part-width figures "
-            "(a different aspect ratio per publisher), axis labels kept inside the column.",
-            fontsize=8.5, color=SUB, va="top"),
-    ax.text(-16, top + 71, "Body text is greeked — only the first paragraph is real; each figure "
-            "caption follows that journal's house style.", fontsize=8.5, color=SUB, va="top"),
-    ax.text(-16, top + 60, "Type shown to scale —  article title 16 pt  ·  body 9 pt  ·  "
-            "caption 8 pt  ·  axis label 7 pt", fontsize=7.4, color=ACCENT, va="top",
-            fontweight="bold"),
-]
-
-# ---- typeface specimen (top-right): aligned grid, same text & formula --------
-_tsx = totalW - 200
-KEY = [ax.text(_tsx, top + 99, "Three typefaces — same text & formula",
-               fontsize=6.5, fontweight="bold", color=INK, va="top", ha="left")]
-_speccols = [("Arial",           FP_ARIAL, FP_ARIAL_I, FP_ARIAL_B, "stixsans"),
-             ("Times New Roman", FP_TIMES, FP_TIMES_I, FP_TIMES_B, "stix"),
-             ("Computer Modern", FP_CM,    None,        FP_CMB,    "cm")]
-_rows = [("Large · 12 pt", 7.4, "reg"), ("Regular · 9 pt", 5.6, "reg"),
-         ("Small · 7 pt", 4.3, "reg"), ("italic", 5.6, "ital"),
-         ("bold", 5.6, "bold"), ("math", 6.3, "math")]
-TXT, FORMULA = "Sample 0123", r"$E=mc^2$"
-_yhdr = top + 86                                       # header-row centre
-for _cj, (_nm, _reg, _ital, _bold, _mset) in enumerate(_speccols):
-    _cx = _tsx + 36 + _cj * 56
-    KEY.append(ax.text(_cx, _yhdr, _nm, fontproperties=_bold, fontsize=6.0,
-                       color=INK, va="center", ha="left"))
-    for _ri, (_lab, _fs, _kind) in enumerate(_rows):
-        _ry = _yhdr - 12 - _ri * 8.0                  # row centre (vertical align)
-        if _cj == 0:
-            KEY.append(ax.text(_tsx, _ry, _lab, fontsize=4.5, color=SUB,
-                               va="center", ha="left", style="italic"))
-        if _kind in ("reg",):
-            KEY.append(ax.text(_cx, _ry, TXT, fontproperties=_reg, fontsize=_fs,
-                               color=INK, va="center", ha="left"))
-        elif _kind == "bold":
-            KEY.append(ax.text(_cx, _ry, TXT, fontproperties=_bold, fontsize=_fs,
-                               color=INK, va="center", ha="left"))
-        elif _kind == "ital":
-            if _ital is not None:
-                KEY.append(ax.text(_cx, _ry, TXT, fontproperties=_ital, fontsize=_fs,
-                                   color=INK, va="center", ha="left"))
-            else:
-                KEY.append(ax.text(_cx, _ry, r"$Sample\ 0123$", math_fontfamily="cm",
-                                   fontsize=_fs, color=INK, va="center", ha="left"))
-        else:
-            KEY.append(ax.text(_cx, _ry, FORMULA, math_fontfamily=_mset, fontsize=_fs,
-                               color=INK, va="center", ha="left"))
-
-# ---- bottom legend + footnote -----------------------------------------------
-ly = -38
-leg = [(W_ORNG, "-", "part-/single-column figure"),
-       (W_BLUE, "-", "full-width figure"),
-       (TEXT_EC, "dash", "text area (margins)"),
-       (GREEK_C, "rule", "greeked body text")]
-for lx, (color, kind, label) in zip([70, 250, 410, 560], leg):
-    ax.plot([lx, lx + 11], [ly, ly], color=color,
-            lw=(3 if kind == "-" else (1.3 if kind == "rule" else 1.0)),
-            ls=("-" if kind != "dash" else (0, (4, 3))), solid_capstyle="round")
-    ax.text(lx + 15, ly, label, va="center", ha="left", fontsize=9, color=INK)
-
-ax.text(-16, -51, "Type sizes are shown roughly to scale (title 16 pt down to axis label 7 pt); "
-        "column widths verified for Nature / Elsevier / IEEE, others representative. Figures use a "
-        "different aspect ratio per publisher (w : h on each panel) and panel labels (a, (a), (A), "
-        "A …) in each journal's house style. Always confirm with the target journal.",
-        fontsize=6.6, color=SUB, va="top")
-
-
-# ---- lay out the deferred captions now that a renderer exists ----------------
 def render_captions(R):
     inv = ax.transData.inverted()
 
@@ -473,79 +375,128 @@ def render_captions(R):
             STRUCT.append((page, t)); sx += dw
 
 
-fig.canvas.draw()
-render_captions(fig.canvas.get_renderer())
-fig.canvas.draw()
-R = fig.canvas.get_renderer()
-_inv = ax.transData.inverted()
+def audit(label):
+    """Geometric self-check for the current figure, in data (mm) coordinates."""
+    fig.canvas.draw()
+    R = fig.canvas.get_renderer()
+    inv = ax.transData.inverted()
 
+    def dbox(art, tight=False):
+        bb = art.get_tightbbox(R) if tight else art.get_window_extent(R)
+        (x0, y0) = inv.transform((bb.x0, bb.y0)); (x1, y1) = inv.transform((bb.x1, bb.y1))
+        return (min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1))
 
-def _dx(px):
-    return _inv.transform((px, 0))[0]
+    def ov(a, b, pad=0.5):
+        return a[0] < b[2] - pad and b[0] < a[2] - pad and a[1] < b[3] - pad and b[1] < a[3] - pad
 
-
-def _ov(a, b, pad=1.0):
-    p = pad / (R.points_to_pixels(1) / 0.728)
-    return a.x0 < b.x1 - p and b.x0 < a.x1 - p and a.y0 < b.y1 - p and b.y0 < a.y1 - p
-
-
-_bad = []
-for _tag, _ins, _L, _Rr in CHECKS:
-    _bb = _ins.get_tightbbox(R)
-    if _dx(_bb.x0) < _L - 0.6 or _dx(_bb.x1) > _Rr + 0.6:
-        _bad.append((_tag, f"[{_dx(_bb.x0):.1f},{_dx(_bb.x1):.1f}] vs [{_L:.1f},{_Rr:.1f}]"))
-print("LABELS OUTSIDE COLUMN:", "none ✓" if not _bad else _bad)
-
-_bodybad = [(t.get_text()[:14], round(_dx(t.get_window_extent(R).x1), 1), round(r, 1))
-            for _i, t, l, r in BODYBOX if _dx(t.get_window_extent(R).x1) > r + 0.8]
-print("BODY TEXT OVERFLOWING COLUMN:", "none ✓" if not _bodybad else _bodybad[:8])
-
-import collections as _co
-_cnt = _co.Counter()
-for _i, t, l, r in BODYBOX:
-    _cnt[_i] += 1
-print("real body lines per page:", [_cnt[k] for k in range(6)])
-print("  -> every page has its real paragraph:",
-      "ok ✓" if len(_cnt) == 6 and min(_cnt.values()) >= 2 else "MISSING ✗")
-
-_kb = min(k.get_window_extent(R).y0 for k in KEY)
-_ht = max(h.get_window_extent(R).y1 for h in HDRS)
-print("SPECIMEN clears publisher headers:",
-      "ok ✓" if _kb > _ht else f"OVERLAP ✗ key={_kb:.0f} hdr={_ht:.0f}")
-_lr = max(t.get_window_extent(R).x1 for t in LEFTT)
-print("TITLE clears specimen:", "ok ✓" if _dx(_lr) < _tsx else f"OVERLAP ✗ {_dx(_lr):.0f}>{_tsx}")
-
-_sp, _ip, _bp = _co.defaultdict(list), _co.defaultdict(list), _co.defaultdict(list)
-for _i, a in STRUCT:
-    _sp[_i].append(a)
-for _i, a in INSETS:
-    _ip[_i].append(a)
-for _i, t, l, r in BODYBOX:
-    _bp[_i].append(t)
-_prob = []
-for _i in range(6):
-    Sx = [(s, s.get_window_extent(R)) for s in _sp[_i]]
-    Ix = [(a, a.get_tightbbox(R)) for a in _ip[_i]]
-    Bx = [(t, t.get_window_extent(R)) for t in _bp[_i]]
+    probs = []
+    for tag, ins, L, Rr in CHECKS:                       # axis labels stay in column
+        bb = dbox(ins, tight=True)
+        if bb[0] < L - 0.6 or bb[2] > Rr + 0.6:
+            probs.append(f"{tag}: label out of column")
+    for _i, t, l, r in BODYBOX:                           # body text fits its column
+        if dbox(t)[2] > r + 0.8:
+            probs.append(f"body overflow: {t.get_text()[:14]}")
+    if len([1 for _i, *_ in BODYBOX]) < 2:
+        probs.append("real paragraph missing")
+    Sx = [(s, dbox(s)) for _i, s in STRUCT]               # pairwise overlap audit
+    Ix = [(a, dbox(a, tight=True)) for _i, a in INSETS]
+    Bx = [(t, dbox(t)) for _i, t, l, r in BODYBOX]
     for a in range(len(Sx)):
         for b in range(a + 1, len(Sx)):
-            if _ov(Sx[a][1], Sx[b][1]):
-                _prob.append((_i, "struct/struct", Sx[a][0].get_text()[:12], Sx[b][0].get_text()[:12]))
+            if ov(Sx[a][1], Sx[b][1]):
+                probs.append(f"struct/struct: {Sx[a][0].get_text()[:10]} / {Sx[b][0].get_text()[:10]}")
     for s, sb in Sx:
         for _a, ab in Ix:
-            if _ov(sb, ab):
-                _prob.append((_i, "struct/figure", s.get_text()[:14]))
+            if ov(sb, ab):
+                probs.append(f"struct/figure: {s.get_text()[:12]}")
     for t, tb in Bx:
         for _a, ab in Ix:
-            if _ov(tb, ab, 0.4):
-                _prob.append((_i, "body/figure", t.get_text()[:12]))
+            if ov(tb, ab, 0.4):
+                probs.append(f"body/figure: {t.get_text()[:10]}")
         for s, sb in Sx:
-            if _ov(tb, sb, 0.4):
-                _prob.append((_i, "body/struct", t.get_text()[:10], s.get_text()[:10]))
-print("PAIRWISE OVERLAPS:", "none ✓" if not _prob else f"{len(_prob)} found")
-for _p in _prob[:24]:
-    print("   ", _p)
+            if ov(tb, sb, 0.4):
+                probs.append(f"body/struct: {t.get_text()[:8]} / {s.get_text()[:8]}")
+    print(f"  {label:16s} {'OK ✓' if not probs else str(len(probs)) + ' ISSUE(S): ' + '; '.join(probs[:6])}")
+    return probs
 
-fig.savefig("publisher_page_layouts.pdf", bbox_inches="tight", pad_inches=0.15)
-fig.savefig("publisher_page_layouts.png", dpi=400, bbox_inches="tight", pad_inches=0.15)
-print("wrote publisher_page_layouts.pdf and .png")
+
+def render_publisher(i):
+    global ax, fig
+    name, paper, PW, PH, single, double, ncol, dfn, sfn, ok, heading = pubs[i]
+    for L in (CHECKS, BODYBOX, STRUCT, INSETS, CAPS):
+        L.clear()
+    CUR[0] = i; REAL[0] = False
+    (adw, adh), (asw, ash) = ASPECT[name]
+    x0c, x1c, y0c, y1c = -6, PW + 8, -27, PH + 33
+    FAC = 0.0215
+    fig, ax = plt.subplots(figsize=((x1c - x0c) * FAC, (y1c - y0c) * FAC))
+    ax.set_xlim(x0c, x1c); ax.set_ylim(y0c, y1c)
+    ax.set_aspect("equal"); ax.axis("off")
+
+    draw_page(i, 0, 0, name, paper, PW, PH, single, double, ncol, dfn, sfn, ok, heading)
+    S(i, 0, PH + 31, name, fontsize=12, fontweight="bold", color=INK, va="top", ha="left")
+    S(i, 0, PH + 16.5, f"single {single:g} mm · full {double:g} mm · figures {adw}:{adh} & {asw}:{ash}",
+      fontsize=5.0, color=SUB, va="top", ha="left")
+    S(i, 0, PH + 9.5, f"panel labels: {panel_desc(name)} · width {'verified' if ok else 'representative'}",
+      fontsize=5.0, color=SUB, va="top", ha="left")
+
+    fig.canvas.draw()
+    render_captions(fig.canvas.get_renderer())
+    probs = audit(name)
+    slug = name.split()[0].lower()
+    fig.savefig(f"layout_{slug}.pdf", bbox_inches="tight", pad_inches=0.05)
+    fig.savefig(f"layout_{slug}.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
+    plt.close(fig)
+    return probs
+
+
+def render_specimen():
+    global ax, fig
+    cw, ch = 200, 72
+    fig, ax = plt.subplots(figsize=(cw * 0.032, ch * 0.032))
+    ax.set_xlim(0, cw); ax.set_ylim(0, ch); ax.set_aspect("equal"); ax.axis("off")
+    ax.text(0, ch, "Three typefaces — same text & formula", fontsize=6.5,
+            fontweight="bold", color=INK, va="top", ha="left")
+    speccols = [("Arial", FP_ARIAL, FP_ARIAL_I, FP_ARIAL_B, "stixsans"),
+                ("Times New Roman", FP_TIMES, FP_TIMES_I, FP_TIMES_B, "stix"),
+                ("Computer Modern", FP_CM, None, FP_CMB, "cm")]
+    rows = [("Large · 12 pt", 7.4, "reg"), ("Regular · 9 pt", 5.6, "reg"),
+            ("Small · 7 pt", 4.3, "reg"), ("italic", 5.6, "ital"),
+            ("bold", 5.6, "bold"), ("math", 6.3, "math")]
+    TXT, FORMULA = "Sample 0123", r"$E=mc^2$"
+    yhdr = ch - 13
+    for cj, (nm, reg, ital, bold, mset) in enumerate(speccols):
+        cx = 34 + cj * 56
+        ax.text(cx, yhdr, nm, fontproperties=bold, fontsize=6.0, color=ACCENT, va="center", ha="left")
+        for ri, (lab, fs, kind) in enumerate(rows):
+            ry = yhdr - 11 - ri * 8.0
+            if cj == 0:
+                ax.text(0, ry, lab, fontsize=4.5, color=SUB, va="center", ha="left", style="italic")
+            if kind == "reg":
+                ax.text(cx, ry, TXT, fontproperties=reg, fontsize=fs, color=INK, va="center", ha="left")
+            elif kind == "bold":
+                ax.text(cx, ry, TXT, fontproperties=bold, fontsize=fs, color=INK, va="center", ha="left")
+            elif kind == "ital":
+                if ital is not None:
+                    ax.text(cx, ry, TXT, fontproperties=ital, fontsize=fs, color=INK, va="center", ha="left")
+                else:
+                    ax.text(cx, ry, r"$Sample\ 0123$", math_fontfamily="cm", fontsize=fs,
+                            color=INK, va="center", ha="left")
+            else:
+                ax.text(cx, ry, FORMULA, math_fontfamily=mset, fontsize=fs, color=INK, va="center", ha="left")
+    fig.savefig("typeface_specimen.pdf", bbox_inches="tight", pad_inches=0.05)
+    fig.savefig("typeface_specimen.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
+    plt.close(fig)
+
+
+if __name__ == "__main__":
+    print("Per-publisher layout self-checks:")
+    all_ok = True
+    for i in range(len(pubs)):
+        if render_publisher(i):
+            all_ok = False
+    render_specimen()
+    print("typeface_specimen     OK ✓")
+    print("ALL CLEAN ✓" if all_ok else "SOME ISSUES — see above ✗")
+    print("wrote layout_<publisher>.{png,pdf} (×6) and typeface_specimen.{png,pdf}")
