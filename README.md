@@ -77,6 +77,7 @@ with **panel labels and captions in each house style** and greeked body text.
 | **[`scientific.mplstyle`](scientific.mplstyle)** | A drop-in matplotlib style sheet encoding the defaults: Arial · 7 pt · Type-42 editable vector export · despined axes · Wong colour-blind-safe palette. |
 | **[`publisher_page_layouts.py`](publisher_page_layouts.py)** | Generates the six per-publisher layouts above (`layout_*.png` / `.pdf`) and the typeface specimen (`typeface_specimen.png` / `.pdf`), drawn to scale with real sample plots. |
 | **[`journal_layout_schematic.py`](journal_layout_schematic.py)** | Generates a single-page "figure anatomy" schematic. → `.png` / `.pdf` |
+| **[`rcparams_text_map.py`](rcparams_text_map.py)** | Generates the "which rcParam controls each text element" map (see §4). → `.png` / `.pdf` |
 
 ## Quick start
 
@@ -98,6 +99,7 @@ sans-serif is used as a fallback):
 ```bash
 python publisher_page_layouts.py      # -> layout_<publisher>.{png,pdf} (x6) + typeface_specimen.{png,pdf}
 python journal_layout_schematic.py    # -> journal_layout_schematic.{pdf,png}
+python rcparams_text_map.py           # -> rcparams_text_map.{pdf,png}
 ```
 
 The full reference follows.
@@ -280,6 +282,13 @@ mpl.rcParams.update({
     "mathtext.fontset": "dejavusans",  # keep math consistent with sans text
 })
 ```
+
+Each parameter above sets the size of one text element. The map below colours every text
+element by the rcParam that controls it — x- and y-axis labels share a colour because both
+are governed by `axes.labelsize` — with the parameter names keyed (in matching colours) on the
+right. (Typeface is shared via `font.family`; weights via `axes.titleweight` / `axes.labelweight`.)
+
+![Each text element of a matplotlib figure coloured by the rcParam that sets its size (title, axes title, axis labels, tick labels, legend entries, legend title, annotations), with a colour-matched key naming each parameter](rcparams_text_map.png)
 
 > If you see `findfont: Font family 'Arial' not found`, Arial isn't installed (common on Linux/
 > WSL). Either install it (e.g. `msttcorefonts`), drop in a `.ttf` and run
