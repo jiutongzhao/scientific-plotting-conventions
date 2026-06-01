@@ -1,21 +1,29 @@
 """
 rcparams_text_map.py
 ====================
-A teaching diagram: which matplotlib rcParam sets the SIZE of each text element
-in a figure. Every text element in the sample plot is coloured by the rcParam
-that controls it (x- and y-axis labels share a colour because both are governed
-by `axes.labelsize`), and a colour-matched key on the right lists the parameter
-names. Data lines are kept grey so the only colour carries the text mapping.
+A combined matplotlib styling reference:
+
+  TOP  — which rcParam sets the SIZE of each text element. Every text element in
+         the sample plot is coloured by the rcParam that controls it (x- and
+         y-axis labels share a colour because both are `axes.labelsize`), with a
+         colour-matched key of the parameter names.
+  BOTTOM — what the line-width, line-style and marker-size choices look like
+         (lines.linewidth / linestyle / lines.markersize). These are rarely
+         mandated by journals, so the point is to SEE the options.
+
+Colours are the SciencePlots "high-vis" cycle (github.com/garrettj403/SciencePlots).
 
 Output: rcparams_text_map.png / .pdf
 """
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 
-# one distinct colour per controlling rcParam.  Hues are the SciencePlots
-# "high-vis" cycle (github.com/garrettj403/SciencePlots), darkened where needed
-# so small text stays legible on white; two extras (crimson, grey) round it out.
+HIGHVIS = ["#0d49fb", "#e6091c", "#26eb47", "#8936df", "#fec32d", "#25d7fd"]
+
+# one distinct colour per controlling rcParam (high-vis hues, darkened where
+# needed so small text stays legible; two extras round out the eight)
 C = {
     "figure.titlesize":      "#0d49fb",   # high-vis blue
     "axes.titlesize":        "#e6091c",   # high-vis red
@@ -27,7 +35,7 @@ C = {
     "font.size":             "#555555",   # grey  (extra; generic text / fallback base)
 }
 
-# exaggerated, clearly-different sizes so the hierarchy is obvious ------------
+# exaggerated, clearly-different sizes so the text hierarchy is obvious
 mpl.rcParams.update({
     "font.family": "sans-serif",
     "font.sans-serif": ["Arial", "Liberation Sans", "Helvetica", "DejaVu Sans"],
@@ -37,14 +45,20 @@ mpl.rcParams.update({
     "legend.fontsize": 12, "legend.title_fontsize": 12, "font.size": 11,
     "axes.linewidth": 1.0, "lines.linewidth": 2.0,
 })
+INK, SUB = "#1f2a37", "#6b7280"
 
-fig = plt.figure(figsize=(11.6, 5.7))
-gs = fig.add_gridspec(1, 2, width_ratios=[1.08, 1.0], wspace=0.10,
-                      left=0.06, right=0.985, top=0.86, bottom=0.12)
-ax = fig.add_subplot(gs[0, 0])
-key = fig.add_subplot(gs[0, 1]); key.axis("off")
+fig = plt.figure(figsize=(11.6, 8.9))
+gs = fig.add_gridspec(2, 1, height_ratios=[5.0, 3.1], hspace=0.34,
+                      left=0.055, right=0.985, top=0.875, bottom=0.055)
+gtop = gs[0].subgridspec(1, 2, width_ratios=[1.08, 1.0], wspace=0.10)
+ax = fig.add_subplot(gtop[0])
+key = fig.add_subplot(gtop[1]); key.axis("off")
+gbot = gs[1].subgridspec(1, 3, wspace=0.12)
+bw, bs, bm = [fig.add_subplot(gbot[i]) for i in range(3)]
+for a in (bw, bs, bm):
+    a.set_xlim(0, 1); a.set_ylim(0, 1); a.axis("off")
 
-# ---- sample plot: grey data, every text element coloured by its rcParam ----
+# ===================== TOP: text element -> rcParam map =====================
 x = np.linspace(0, 10, 200)
 ax.plot(x, np.sin(x), color="#3a3a3a", label="signal A")
 ax.plot(x, 0.7 * np.cos(x), color="#9a9a9a", ls="--", label="signal B")
@@ -68,14 +82,13 @@ leg.get_title().set_color(C["legend.title_fontsize"])
 ax.text(0.035, 0.07, "Text annotation  ·  ax.text()", transform=ax.transAxes,
         color=C["font.size"], style="italic")
 
-fig.suptitle("Figure title  ·  fig.suptitle()", x=0.305, y=0.965,
+fig.suptitle("Figure title  ·  fig.suptitle()", x=0.30, y=0.965,
              color=C["figure.titlesize"], fontweight="bold")
 
-# ---- key: parameter names in matching colours -----------------------------
+# key (parameter names in matching colours)
 key.set_xlim(0, 1); key.set_ylim(0, 1)
 key.text(0.0, 1.0, "Which rcParam sets each text size", fontsize=14,
-         fontweight="bold", color="#1f2a37", va="top")
-
+         fontweight="bold", color=INK, va="top")
 rows = [
     ("figure.titlesize",       "figure title — fig.suptitle()"),
     ("axes.titlesize",         "axes title — ax.set_title()"),
@@ -89,20 +102,45 @@ rows = [
 y = 0.885
 for param, desc in rows:
     col = C[param]
-    val = mpl.rcParams[param]
     key.plot([0.0, 0.035], [y - 0.012, y - 0.012], color=col, lw=4,
              solid_capstyle="round", clip_on=False)
     key.text(0.055, y, param, color=col, fontweight="bold", fontsize=12.5,
              family="monospace", va="top")
-    key.text(0.055, y - 0.045, f"{val:g} pt  →  {desc}", color=col, fontsize=10, va="top")
+    key.text(0.055, y - 0.045, f"{mpl.rcParams[param]:g} pt  →  {desc}",
+             color=col, fontsize=10, va="top")
     y -= 0.112
-
 key.text(0.0, -0.02,
          "Typeface of every element: font.family / font.sans-serif.\n"
          "Weights: axes.titleweight · axes.labelweight · figure.titleweight.\n"
          "Also: figure.labelsize → fig.supxlabel()/supylabel().",
-         fontsize=8.6, color="#6b7280", va="top")
+         fontsize=8.6, color=SUB, va="top")
 
-fig.savefig("rcparams_text_map.pdf", bbox_inches="tight", pad_inches=0.05)
-fig.savefig("rcparams_text_map.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
-print("wrote rcparams_text_map.png and .pdf")
+# ===================== BOTTOM: line / style / marker choices =================
+bw.set_title("Line width  ·  lines.linewidth", fontsize=12, fontweight="bold", color=INK, pad=8)
+for yy, lw in zip(np.linspace(0.80, 0.10, 6), [0.5, 0.75, 1.0, 1.5, 2.0, 3.0]):
+    bw.plot([0.36, 0.97], [yy, yy], lw=lw, color=HIGHVIS[0], solid_capstyle="round")
+    bw.text(0.0, yy, f"{lw:g} pt", va="center", ha="left", fontsize=10.5, color=INK)
+
+bs.set_title("Line style  ·  linestyle (ls)", fontsize=12, fontweight="bold", color=INK, pad=8)
+for yy, (nm, ls) in zip(np.linspace(0.76, 0.14, 4),
+                        [("solid", "-"), ("dashed", "--"), ("dotted", ":"), ("dash-dot", "-.")]):
+    bs.plot([0.48, 0.97], [yy, yy], lw=1.9, ls=ls, color=HIGHVIS[1], solid_capstyle="round")
+    bs.text(0.0, yy, f"{nm}  '{ls}'", va="center", ha="left", fontsize=10.5, color=INK)
+
+bm.set_title("Marker size  ·  lines.markersize", fontsize=12, fontweight="bold", color=INK, pad=8)
+for yy, ms in zip(np.linspace(0.76, 0.14, 5), [3, 5, 7, 9, 12]):
+    bm.plot([0.64], [yy], marker="o", ms=ms, color=HIGHVIS[3],
+            markeredgecolor="white", markeredgewidth=0.8)
+    bm.text(0.0, yy, f"ms = {ms}", va="center", ha="left", fontsize=10.5, color=INK)
+
+fig.text(0.52, 0.0,
+         "Line width / style / marker size are rarely journal-mandated — choose for legibility at "
+         "final size (thicker / larger for talks); vary style and shape so it reads in grayscale.",
+         ha="center", va="bottom", fontsize=8.8, color=SUB)
+
+# faint divider between the two halves
+fig.add_artist(Line2D([0.055, 0.985], [0.405, 0.405], color="#dde1e6", lw=1.0))
+
+fig.savefig("rcparams_text_map.pdf", bbox_inches="tight", pad_inches=0.06)
+fig.savefig("rcparams_text_map.png", dpi=300, bbox_inches="tight", pad_inches=0.06)
+print("wrote rcparams_text_map.png and .pdf (combined text-map + line/marker demo)")

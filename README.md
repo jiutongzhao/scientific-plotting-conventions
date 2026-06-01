@@ -101,12 +101,14 @@ mpl.rcParams.update({
 })
 ```
 
-Each parameter above sets the size of one text element. The map below colours every text
-element by the rcParam that controls it — x- and y-axis labels share a colour because both
+Each parameter above sets the size of one text element. The map below (**top half**) colours every
+text element by the rcParam that controls it — x- and y-axis labels share a colour because both
 are governed by `axes.labelsize` — with the parameter names keyed (in matching colours) on the
 right. (Typeface is shared via `font.family`; weights via `axes.titleweight` / `axes.labelweight`.)
+Its **bottom half** previews line-width, line-style and marker-size options — see
+[Line weight & marker size](#line-weight--marker-size).
 
-![Each text element of a matplotlib figure coloured by the rcParam that sets its size (title, axes title, axis labels, tick labels, legend entries, legend title, annotations), with a colour-matched key naming each parameter](rcparams_text_map.png)
+![Top: each text element of a matplotlib figure coloured by the rcParam that sets its size, with a colour-matched key of the parameter names. Bottom: line widths (0.5–3 pt), line styles (solid/dashed/dotted/dash-dot) and marker sizes (3–12).](rcparams_text_map.png)
 
 > If you see `findfont: Font family 'Arial' not found`, Arial isn't installed (common on Linux/
 > WSL). Either install it (e.g. `msttcorefonts`), drop in a `.ttf` and run
@@ -434,9 +436,8 @@ mpl.rcParams["image.cmap"] = "viridis"   # default for imshow/pcolormesh
 Journals **rarely mandate** line widths, marker sizes, tick direction or spines — so choose them
 for **legibility at the final printed size** rather than to a rule: go thicker / larger for slides
 and posters, and vary line *style* and marker *shape* too so the figure still reads in grayscale.
-The figure shows what the common choices actually look like:
-
-![Line widths from 0.5 to 3 pt, line styles (solid / dashed / dotted / dash-dot) and marker sizes from 3 to 12, shown side by side](line_marker_demo.png)
+The **bottom half of the [styling map](#fonts--font-size)** (in Part 1) shows what the common
+line-width, line-style and marker-size choices actually look like.
 
 Set them with the obvious rcParams (or per-artist `lw=`, `ls=`, `ms=`):
 
@@ -808,8 +809,7 @@ This repository is a **reference**, not a library to import — the value is the
 | **[`scientific.mplstyle`](scientific.mplstyle)** | *Optional convenience* — bundles the rcParams from the guide (Arial · 7 pt · Type-42 editable vector export · despined axes) into one file you can `plt.style.use(...)`. Not the point of the repo; the guide is. |
 | **[`publisher_page_layouts.py`](publisher_page_layouts.py)** | Generates the six per-publisher layouts above (`layout_*.png` / `.pdf`) and the typeface specimen (`typeface_specimen.png` / `.pdf`), drawn to scale with real sample plots. |
 | **[`journal_layout_schematic.py`](journal_layout_schematic.py)** | Generates a single-page "figure anatomy" schematic. → `.png` / `.pdf` |
-| **[`rcparams_text_map.py`](rcparams_text_map.py)** | Generates the "which rcParam controls each text element" map (see [Fonts & font size](#fonts--font-size)). → `.png` / `.pdf` |
-| **[`line_marker_demo.py`](line_marker_demo.py)** | Generates the line-width / line-style / marker-size visual reference (see [Line weight & marker size](#line-weight--marker-size)). → `.png` / `.pdf` |
+| **[`rcparams_text_map.py`](rcparams_text_map.py)** | Generates the combined styling map — the text-element → rcParam colour map (top) plus the line-width / line-style / marker-size reference (bottom). → `.png` / `.pdf` |
 
 ### Reproducing the figures
 
@@ -819,7 +819,6 @@ Needs `numpy` + `matplotlib` (Arial improves the look, but a bundled sans-serif 
 python publisher_page_layouts.py      # -> layout_<publisher>.{png,pdf} (x6) + typeface_specimen.{png,pdf}
 python journal_layout_schematic.py    # -> journal_layout_schematic.{pdf,png}
 python rcparams_text_map.py           # -> rcparams_text_map.{pdf,png}
-python line_marker_demo.py            # -> line_marker_demo.{pdf,png}
 ```
 
 ---
