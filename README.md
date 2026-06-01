@@ -53,10 +53,22 @@ fig, ax = plt.subplots(figsize=fig_size(89))    # single column
 fig, ax = plt.subplots(figsize=fig_size(183))   # double column
 ```
 
-> **Gotcha — `bbox_inches="tight"` changes the final size.** It crops to the artists, so the
-> saved width is no longer exactly your `figsize`. For *strict* column fitting, prefer
-> `constrained_layout` (below) and save **without** `tight`, or add a fixed
-> `pad_inches`. For everyday use, `tight` is fine and convenient.
+> **Gotcha — "tight" cropping silently overrides your `figsize`.** Cropping the figure to its
+> artists makes the saved size differ from `figsize`, and it can be triggered **two ways**:
+> 1. Passing **`bbox_inches="tight"`** to `savefig()` (the obvious one — `tight_layout()` is the
+>    same idea applied on screen).
+> 2. The **`savefig.bbox`** rcParam being set to `tight`. Then **every** save crops, *even if you
+>    never pass `bbox_inches`*. Several style packages set this — notably
+>    [SciencePlots](https://github.com/garrettj403/SciencePlots) — so a figure can come out the
+>    wrong size for no visible reason in your code.
+>
+> If you need the exact `figsize`, let `constrained_layout` manage the margins and keep cropping
+> **off** — and undo any package that forced it back on:
+> ```python
+> plt.rcParams["savefig.bbox"] = "standard"   # exact figsize on save (matplotlib's default)
+> ```
+> For everyday use `tight` is fine and convenient — just know it overrides `figsize`. (The bundled
+> [`scientific.mplstyle`](scientific.mplstyle) ships `savefig.bbox: standard` for this reason.)
 
 ---
 
@@ -634,8 +646,8 @@ figure.figsize:        3.5, 2.16          # inches: single column, ~golden ratio
 figure.dpi:            150                 # on-screen
 figure.constrained_layout.use: True
 savefig.dpi:           600                 # raster export at final size
-savefig.bbox:          tight
-savefig.pad_inches:    0.02
+savefig.bbox:          standard            # exact figsize; NOT 'tight' (tight silently changes the output size)
+savefig.pad_inches:    0.02                # only applies if you switch savefig.bbox back to 'tight'
 savefig.transparent:   False
 
 # ---- Editable, vector-safe text ----
@@ -715,10 +727,12 @@ fig.savefig("demo.png", dpi=600)       # raster → for slides / quick preview
 fig.savefig(
     "figure.pdf",          # vector container; format inferred from extension
     dpi=600,               # only affects any rasterized layers
-    bbox_inches="tight",   # crop to artists (note: changes final size slightly)
-    pad_inches=0.02,       # small uniform margin
+    bbox_inches=None,      # None/'standard' = keep the exact figsize (see the size gotcha);
+                           #   use "tight" only if you accept it cropping/resizing the figure
     transparent=True,      # no white box when placed on a colored slide
 )
+# Reset if a style package forced tight cropping on you:
+plt.rcParams["savefig.bbox"] = "standard"
 ```
 
 ---

@@ -7,8 +7,8 @@ figure.figsize:        3.5, 2.16          # inches: single column, ~golden ratio
 figure.dpi:            150                 # on-screen rendering
 figure.constrained_layout.use: True
 savefig.dpi:           600                 # raster export at final size
-savefig.bbox:          tight
-savefig.pad_inches:    0.02
+savefig.bbox:          standard            # exact figsize; NOT 'tight' (tight silently changes the output size — see README)
+savefig.pad_inches:    0.02                # only applies if you switch savefig.bbox back to 'tight'
 savefig.transparent:   False
 
 # ---- Editable, vector-safe text ----
