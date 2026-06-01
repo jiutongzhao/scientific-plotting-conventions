@@ -14,45 +14,6 @@ commands that meet them — not the style file.)
 
 ---
 
-## Repository contents
-
-| File | What it is |
-|---|---|
-| **this `README.md`** | The full guide — everything below. |
-| **[`scientific.mplstyle`](scientific.mplstyle)** | *Optional convenience* — bundles the rcParams from the guide (Arial · 7 pt · Type-42 editable vector export · despined axes) into one file you can `plt.style.use(...)`. Not the point of the repo; the guide below is. |
-| **[`publisher_page_layouts.py`](publisher_page_layouts.py)** | Generates the six per-publisher layouts above (`layout_*.png` / `.pdf`) and the typeface specimen (`typeface_specimen.png` / `.pdf`), drawn to scale with real sample plots. |
-| **[`journal_layout_schematic.py`](journal_layout_schematic.py)** | Generates a single-page "figure anatomy" schematic. → `.png` / `.pdf` |
-| **[`rcparams_text_map.py`](rcparams_text_map.py)** | Generates the "which rcParam controls each text element" map (see [Fonts & font size](#fonts--font-size)). → `.png` / `.pdf` |
-| **[`line_marker_demo.py`](line_marker_demo.py)** | Generates the line-width / line-style / marker-size visual reference (see [Line weight & marker size](#line-weight--marker-size)). → `.png` / `.pdf` |
-
----
-
-## Quick start
-
-```python
-import matplotlib.pyplot as plt
-plt.style.use("scientific.mplstyle")   # publication-ready defaults, one line
-
-fig, ax = plt.subplots(figsize=(3.5, 2.16))   # single-column, ~golden ratio (inches)
-ax.plot(x, y, label="data")
-ax.set_xlabel("Time (s)")              # quantity + unit
-ax.set_ylabel("Signal (a.u.)")
-ax.legend()
-fig.savefig("figure.pdf")              # vector + embedded editable fonts -> submit this
-```
-
-Reproduce the schematics (needs `numpy` + `matplotlib`; Arial improves the look but a bundled
-sans-serif is used as a fallback):
-
-```bash
-python publisher_page_layouts.py      # -> layout_<publisher>.{png,pdf} (x6) + typeface_specimen.{png,pdf}
-python journal_layout_schematic.py    # -> journal_layout_schematic.{pdf,png}
-python rcparams_text_map.py           # -> rcparams_text_map.{pdf,png}
-python line_marker_demo.py            # -> line_marker_demo.{pdf,png}
-```
-
----
-
 ## At a glance — cheat sheet
 
 | Aspect | Print figure (journal) | Slide / poster |
@@ -105,6 +66,8 @@ Representative print specs (**always confirm against the target venue's author g
 - [Applying the settings & exporting](#applying-the-settings--exporting)
 
 [References & further reading](#references--further-reading)
+
+[About this repository](#about-this-repository)
 
 ---
 
@@ -830,6 +793,34 @@ fig.savefig(
 
 > Specific numbers (column widths, DPI floors, accepted formats) change and differ by venue —
 > **always open the target journal's "author/figure guidelines" before final export.**
+
+---
+
+## About this repository
+
+This repository is a **reference**, not a library to import — the value is the guide above. The bundled [`scientific.mplstyle`](scientific.mplstyle) is an optional convenience that packages the rcParams from the guide (see [Applying the settings & exporting](#applying-the-settings--exporting)); you never need it to follow the conventions.
+
+### Files
+
+| File | What it is |
+|---|---|
+| **this `README.md`** | The full guide — this whole document. |
+| **[`scientific.mplstyle`](scientific.mplstyle)** | *Optional convenience* — bundles the rcParams from the guide (Arial · 7 pt · Type-42 editable vector export · despined axes) into one file you can `plt.style.use(...)`. Not the point of the repo; the guide is. |
+| **[`publisher_page_layouts.py`](publisher_page_layouts.py)** | Generates the six per-publisher layouts above (`layout_*.png` / `.pdf`) and the typeface specimen (`typeface_specimen.png` / `.pdf`), drawn to scale with real sample plots. |
+| **[`journal_layout_schematic.py`](journal_layout_schematic.py)** | Generates a single-page "figure anatomy" schematic. → `.png` / `.pdf` |
+| **[`rcparams_text_map.py`](rcparams_text_map.py)** | Generates the "which rcParam controls each text element" map (see [Fonts & font size](#fonts--font-size)). → `.png` / `.pdf` |
+| **[`line_marker_demo.py`](line_marker_demo.py)** | Generates the line-width / line-style / marker-size visual reference (see [Line weight & marker size](#line-weight--marker-size)). → `.png` / `.pdf` |
+
+### Reproducing the figures
+
+Needs `numpy` + `matplotlib` (Arial improves the look, but a bundled sans-serif is used as a fallback):
+
+```bash
+python publisher_page_layouts.py      # -> layout_<publisher>.{png,pdf} (x6) + typeface_specimen.{png,pdf}
+python journal_layout_schematic.py    # -> journal_layout_schematic.{pdf,png}
+python rcparams_text_map.py           # -> rcparams_text_map.{pdf,png}
+python line_marker_demo.py            # -> line_marker_demo.{pdf,png}
+```
 
 ---
 
