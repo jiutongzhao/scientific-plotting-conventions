@@ -13,16 +13,18 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-# one distinct colour per controlling rcParam --------------------------------
+# one distinct colour per controlling rcParam.  Hues are the SciencePlots
+# "high-vis" cycle (github.com/garrettj403/SciencePlots), darkened where needed
+# so small text stays legible on white; two extras (crimson, grey) round it out.
 C = {
-    "figure.titlesize":      "#14375e",   # navy
-    "axes.titlesize":        "#d55e00",   # vermillion
-    "axes.labelsize":        "#009e73",   # green   (x AND y axis labels)
-    "xtick.labelsize":       "#cc79a7",   # pink
-    "ytick.labelsize":       "#2e7fb0",   # blue
-    "legend.fontsize":       "#cc7a00",   # amber
-    "legend.title_fontsize": "#6a3d9a",   # purple
-    "font.size":             "#555555",   # grey  (generic text; the fallback base)
+    "figure.titlesize":      "#0d49fb",   # high-vis blue
+    "axes.titlesize":        "#e6091c",   # high-vis red
+    "axes.labelsize":        "#8936df",   # high-vis purple  (x AND y axis labels)
+    "xtick.labelsize":       "#1a9e30",   # high-vis green (darkened)
+    "ytick.labelsize":       "#0e9ec4",   # high-vis cyan (darkened)
+    "legend.fontsize":       "#b8860b",   # high-vis yellow (darkened to gold)
+    "legend.title_fontsize": "#c2185b",   # crimson (extra)
+    "font.size":             "#555555",   # grey  (extra; generic text / fallback base)
 }
 
 # exaggerated, clearly-different sizes so the hierarchy is obvious ------------

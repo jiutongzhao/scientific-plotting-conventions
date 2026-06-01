@@ -1,8 +1,10 @@
 # Scientific Plotting & Presentation Conventions
 
-A practical, **matplotlib-focused** reference for making figures that are
-**publication-ready**, **legible**, and **editable** — with a ready-to-use style sheet and
-to-scale schematics of how the major publishers expect figures to look.
+A practical reference that **summarizes each major journal's figure requirements** — size,
+resolution, fonts, formats, colour and panel-label conventions — and shows **the matplotlib
+commands that satisfy them**, with to-scale schematics of how each publisher expects a figure to
+look. (A bundled style sheet is included for convenience, but the goal is the requirements and the
+commands that meet them — not the style file.)
 
 > **The one rule that explains all the others:** *build the figure at the exact physical size
 > it will be printed or projected.* Never draw a big figure and shrink it in Word/LaTeX/
@@ -74,10 +76,11 @@ with **panel labels and captions in each house style** and greeked body text.
 | File | What it is |
 |---|---|
 | **this `README.md`** | The full guide — everything below. |
-| **[`scientific.mplstyle`](scientific.mplstyle)** | A drop-in matplotlib style sheet encoding the defaults: Arial · 7 pt · Type-42 editable vector export · despined axes · Wong colour-blind-safe palette. |
+| **[`scientific.mplstyle`](scientific.mplstyle)** | *Optional convenience* — bundles the rcParams from the guide (Arial · 7 pt · Type-42 editable vector export · despined axes) into one file you can `plt.style.use(...)`. Not the point of the repo; the guide below is. |
 | **[`publisher_page_layouts.py`](publisher_page_layouts.py)** | Generates the six per-publisher layouts above (`layout_*.png` / `.pdf`) and the typeface specimen (`typeface_specimen.png` / `.pdf`), drawn to scale with real sample plots. |
 | **[`journal_layout_schematic.py`](journal_layout_schematic.py)** | Generates a single-page "figure anatomy" schematic. → `.png` / `.pdf` |
 | **[`rcparams_text_map.py`](rcparams_text_map.py)** | Generates the "which rcParam controls each text element" map (see §4). → `.png` / `.pdf` |
+| **[`line_marker_demo.py`](line_marker_demo.py)** | Generates the line-width / line-style / marker-size visual reference (see §6). → `.png` / `.pdf` |
 
 ## Quick start
 
@@ -100,6 +103,7 @@ sans-serif is used as a fallback):
 python publisher_page_layouts.py      # -> layout_<publisher>.{png,pdf} (x6) + typeface_specimen.{png,pdf}
 python journal_layout_schematic.py    # -> journal_layout_schematic.{pdf,png}
 python rcparams_text_map.py           # -> rcparams_text_map.{pdf,png}
+python line_marker_demo.py            # -> line_marker_demo.{pdf,png}
 ```
 
 The full reference follows.
@@ -113,7 +117,7 @@ The full reference follows.
 3. [Resolution (DPI) & file format](#3-resolution-dpi--file-format)
 4. [Fonts & font size](#4-fonts--font-size)
 5. [Editable / vector content](#5-editable--vector-content)
-6. [Lines, markers, ticks, spines](#6-lines-markers-ticks-spines)
+6. [Line weight & marker size](#6-line-weight--marker-size)
 7. [Color](#7-color)
 8. [Layout & multi-panel figures](#8-layout--multi-panel-figures)
 9. [Presentations & slides](#9-presentations--slides)
@@ -334,35 +338,25 @@ it's real text. (Power users: `pdffonts figure.pdf` should list `Type 1`/`TrueTy
 
 ---
 
-## 6. Lines, markers, ticks, spines
+## 6. Line weight & marker size
 
-Small details that separate amateur from publication-grade:
+Journals **rarely mandate** line widths, marker sizes, tick direction or spines — so choose them
+for **legibility at the final printed size** rather than to a rule: go thicker / larger for slides
+and posters, and vary line *style* and marker *shape* too so the figure still reads in grayscale.
+The figure shows what the common choices actually look like:
 
-- **Line weight:** 0.5–1.0 pt for data; ~0.6 pt for axes. Below ~0.25 pt lines vanish in
-  print. Bump everything up for slides/posters.
-- **Markers:** ~4 pt; give them an edge (`markeredgewidth ≈ 0.6`) so overlapping points stay
-  distinct. Vary **shape** as well as color so the figure survives grayscale.
-- **Ticks:** point **outward** so they don't collide with data; show minor ticks for fine
-  scales. Keep tick labels sparse and rounded.
-- **Spines:** remove the top and right spines ("despine") to cut visual clutter and maximize
-  the data-ink ratio.
-- **Avoid chartjunk:** no 3-D bars, no heavy gridlines, no drop shadows, no background fills.
-  If you use a grid, make it light (`alpha ≈ 0.3–0.4`, thin).
+![Line widths from 0.5 to 3 pt, line styles (solid / dashed / dotted / dash-dot) and marker sizes from 3 to 12, shown side by side](line_marker_demo.png)
+
+Set them with the obvious rcParams (or per-artist `lw=`, `ls=`, `ms=`):
 
 ```python
 mpl.rcParams.update({
-    "axes.linewidth": 0.6,
-    "axes.spines.top": False,
-    "axes.spines.right": False,
-    "lines.linewidth": 1.0,
-    "lines.markersize": 4,
-    "lines.markeredgewidth": 0.6,
-    "xtick.direction": "out", "ytick.direction": "out",
-    "xtick.major.width": 0.6, "ytick.major.width": 0.6,
-    "xtick.major.size": 3,    "ytick.major.size": 3,
-    "xtick.minor.visible": True, "ytick.minor.visible": True,
+    "lines.linewidth":      1.0,   # data lines (0.5–1.0 pt for print; thicker for talks)
+    "lines.markersize":     4,
+    "lines.markeredgewidth": 0.6,  # an edge keeps overlapping markers distinct
+    "axes.linewidth":       0.6,   # axes / spines
 })
-# or per-axes: ax.spines[["top", "right"]].set_visible(False)
+ax.spines[["top", "right"]].set_visible(False)   # "despine" to cut clutter
 ```
 
 ---
@@ -399,6 +393,13 @@ wong = ["#0072B2", "#E69F00", "#009E73", "#D55E00",
 mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=wong)
 mpl.rcParams["image.cmap"] = "viridis"   # default for imshow/pcolormesh
 ```
+
+> **High-contrast alternative — SciencePlots `high-vis`.** The schematics in this repository use
+> the bright [SciencePlots](https://github.com/garrettj403/SciencePlots) **`high-vis`** colour
+> cycle — `#0d49fb #e6091c #26eb47 #8936df #fec32d #25d7fd` (paired with a line-style cycle).
+> It is punchy and easy to tell apart (good for projection), but **not** colour-blind-safe, so for
+> accessible figures prefer the Wong palette above. SciencePlots also ships journal-matching
+> styles — see [§12](#12-references--further-reading).
 
 ---
 
@@ -469,10 +470,11 @@ Three ways to apply settings, from quick to reproducible:
 2. **A reusable style sheet** (`.mplstyle`) — recommended; portable and version-controllable.
 3. **A context manager** for a one-off figure: `with plt.style.context("paper.mplstyle"): ...`.
 
-### A complete, ready-to-use style sheet
+### Optional: bundle the settings into a style sheet
 
-Save the block below as **`scientific.mplstyle`** next to your script (a companion file
-[`scientific.mplstyle`](scientific.mplstyle) is included in this repo), then load it:
+Everything above is just rcParams that meet the requirements in §§2–7. If you'd rather not repeat
+them in every script, collect them into a **`scientific.mplstyle`** (the companion file in this
+repo is exactly that) and load it — purely a convenience, not a requirement:
 
 ```python
 import matplotlib.pyplot as plt
@@ -786,8 +788,9 @@ shared style sheet (§10), so the rest of the requirements (§§3–7) are satis
 - **Nature** — "Final figure preparation" / artwork guidelines (sizes, fonts, formats).
 - **Matplotlib docs** — *Customizing with style sheets and rcParams*, *Text rendering and
   fonts*, and the *Constrained-layout guide*.
-- **SciencePlots** (`pip install SciencePlots`) — community matplotlib styles matching common
-  journals, if you'd rather start from a maintained preset.
+- **SciencePlots** — J. D. Garrett, *garrettj403/SciencePlots* (`pip install SciencePlots`):
+  community matplotlib styles matching common journals (IEEE, Nature, …). The colour cycle used by
+  this repo's schematics is its **`high-vis`** style; see <https://github.com/garrettj403/SciencePlots>.
 
 > Specific numbers (column widths, DPI floors, accepted formats) change and differ by venue —
 > **always open the target journal's "author/figure guidelines" before final export.**

@@ -28,7 +28,8 @@ from matplotlib.patches import Rectangle
 from matplotlib.lines import Line2D
 from matplotlib.font_manager import FontProperties, findfont
 
-WONG = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#56B4E9", "#CC79A7"]
+# data colour cycle: SciencePlots "high-vis" style (github.com/garrettj403/SciencePlots)
+HIGHVIS = ["#0d49fb", "#e6091c", "#26eb47", "#8936df", "#fec32d", "#25d7fd"]
 mpl.rcParams.update({
     "pdf.fonttype": 42, "ps.fonttype": 42, "svg.fonttype": "none",
     "font.family": "sans-serif",
@@ -37,11 +38,11 @@ mpl.rcParams.update({
     "axes.labelsize": 2.7, "xtick.labelsize": 2.3, "ytick.labelsize": 2.3,
     "legend.fontsize": 2.6,
     "axes.linewidth": 0.45, "lines.linewidth": 0.8, "lines.markersize": 2.2,
-    "axes.prop_cycle": mpl.cycler(color=WONG),
+    "axes.prop_cycle": mpl.cycler(color=HIGHVIS),
 })
 
 INK, SUB, ACCENT = "#1f2a37", "#6b7280", "#2563b8"
-W_BLUE, W_ORNG = "#0072B2", "#E69F00"
+W_BLUE, W_ORNG = "#0d49fb", "#e6091c"   # high-vis blue / red
 T_BLUE, T_ORNG = "#0a4f7a", "#8a6000"
 PAPER_EC, TEXT_EC = "#c9cfd6", "#cdd5dd"
 BODY_C, GREEK_C, CAP_C = "#565c64", "#c3c9d0", "#3b424b"
@@ -125,7 +126,7 @@ def p_band(ax):
 def p_area(ax):
     x = np.linspace(0, 10, 60)
     a = .5 + .4 * np.sin(x / 2) ** 2; b = .4 + .3 * np.cos(x / 3) ** 2
-    ax.stackplot(x, a, b, labels=["U", "V"], colors=WONG[2:4], alpha=.85)
+    ax.stackplot(x, a, b, labels=["U", "V"], colors=HIGHVIS[2:4], alpha=.85)
     ax.set(xlabel="Time (s)", ylabel="Frac.", ylim=(0, 2.5))
     ax.legend(loc="upper center", ncol=2, columnspacing=0.7, **LG)
     _tidy(ax)
