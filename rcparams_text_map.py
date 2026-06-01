@@ -47,9 +47,9 @@ mpl.rcParams.update({
 })
 INK, SUB = "#1f2a37", "#6b7280"
 
-fig = plt.figure(figsize=(11.6, 8.9))
+fig = plt.figure(figsize=(11.8, 9.4))
 gs = fig.add_gridspec(2, 1, height_ratios=[5.0, 3.1], hspace=0.34,
-                      left=0.055, right=0.985, top=0.875, bottom=0.055)
+                      left=0.085, right=0.965, top=0.85, bottom=0.085)
 gtop = gs[0].subgridspec(1, 2, width_ratios=[1.08, 1.0], wspace=0.10)
 ax = fig.add_subplot(gtop[0])
 key = fig.add_subplot(gtop[1]); key.axis("off")
@@ -82,7 +82,7 @@ leg.get_title().set_color(C["legend.title_fontsize"])
 ax.text(0.035, 0.07, "Text annotation  ·  ax.text()", transform=ax.transAxes,
         color=C["font.size"], style="italic")
 
-fig.suptitle("Figure title  ·  fig.suptitle()", x=0.30, y=0.965,
+fig.suptitle("Figure title  ·  fig.suptitle()", x=0.31, y=0.905,
              color=C["figure.titlesize"], fontweight="bold")
 
 # key (parameter names in matching colours)
@@ -139,7 +139,23 @@ fig.text(0.52, 0.0,
          ha="center", va="bottom", fontsize=8.8, color=SUB)
 
 # faint divider between the two halves
-fig.add_artist(Line2D([0.055, 0.985], [0.405, 0.405], color="#dde1e6", lw=1.0))
+fig.add_artist(Line2D([0.085, 0.965], [0.405, 0.405], color="#dde1e6", lw=1.0))
+
+# ---- annotate the figure's OWN size (set by figsize) with dimension lines ----
+ov = fig.add_axes([0, 0, 1, 1]); ov.set_xlim(0, 1); ov.set_ylim(0, 1)
+ov.axis("off"); ov.set_zorder(12); ov.patch.set_alpha(0)
+DIM = "#3b4a5c"
+_ap = dict(arrowstyle="<|-|>", color=DIM, lw=1.1, shrinkA=0, shrinkB=0, mutation_scale=11)
+ov.annotate("", (0.02, 0.955), (0.98, 0.955), arrowprops=_ap)                  # width (top)
+for _x in (0.02, 0.98):
+    ov.plot([_x, _x], [0.955, 0.942], color=DIM, lw=0.8)
+ov.text(0.5, 0.967, f"figure width  ·  figsize[0] = {fig.get_figwidth():g} in",
+        ha="center", va="bottom", color=DIM, fontsize=10.5, fontweight="bold")
+ov.annotate("", (0.026, 0.03), (0.026, 0.95), arrowprops=_ap)                  # height (left)
+for _y in (0.03, 0.95):
+    ov.plot([0.026, 0.039], [_y, _y], color=DIM, lw=0.8)
+ov.text(0.011, 0.49, f"figure height  ·  figsize[1] = {fig.get_figheight():g} in",
+        ha="center", va="center", color=DIM, fontsize=10.5, fontweight="bold", rotation=90)
 
 fig.savefig("rcparams_text_map.pdf", bbox_inches="tight", pad_inches=0.06)
 fig.savefig("rcparams_text_map.png", dpi=300, bbox_inches="tight", pad_inches=0.06)

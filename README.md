@@ -106,9 +106,10 @@ text element by the rcParam that controls it — x- and y-axis labels share a co
 are governed by `axes.labelsize` — with the parameter names keyed (in matching colours) on the
 right. (Typeface is shared via `font.family`; weights via `axes.titleweight` / `axes.labelweight`.)
 Its **bottom half** previews line-width, line-style and marker-size options — see
-[Line weight & marker size](#line-weight--marker-size).
+[Line weight & marker size](#line-weight--marker-size). The whole canvas also carries its
+**`figsize`** dimensions (width × height in inches) — the one size you set in **inches**, not points.
 
-![Top: each text element of a matplotlib figure coloured by the rcParam that sets its size, with a colour-matched key of the parameter names. Bottom: line widths (0.5–3 pt), line styles (solid/dashed/dotted/dash-dot) and marker sizes (3–12).](rcparams_text_map.png)
+![Top: each text element of a matplotlib figure coloured by the rcParam that sets its size, with a colour-matched key of the parameter names. Bottom: line widths (0.5–3 pt), line styles (solid/dashed/dotted/dash-dot) and marker sizes (3–12). The whole figure is dimensioned with its figsize (width × height in inches).](rcparams_text_map.png)
 
 > If you see `findfont: Font family 'Arial' not found`, Arial isn't installed (common on Linux/
 > WSL). Either install it (e.g. `msttcorefonts`), drop in a `.ttf` and run
