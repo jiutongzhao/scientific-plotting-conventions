@@ -14,63 +14,6 @@ commands that meet them — not the style file.)
 
 ---
 
-## At a glance — cheat sheet
-
-| Aspect | Print figure (journal) | Slide / poster |
-|---|---|---|
-| **Width** | 1 column ≈ 89 mm (3.5 in); 2 columns ≈ 180 mm (7.1 in) | Fill the content area; design at 16:9 (13.33 × 7.5 in) |
-| **Height** | ≤ full page (~240 mm); usually keep panels short | — |
-| **Font** | 7 pt typical, **never below ~5 pt** | 18–28 pt body, 28–40 pt titles |
-| **Typeface** | Sans-serif (Arial / Helvetica) | Same sans-serif everywhere |
-| **Line width** | 0.5–1.0 pt (absolute min ~0.25 pt) | 1.5–3 pt (thicker for projection) |
-| **Raster resolution** | 300 dpi (photos), 600 dpi (line/combination) | 150–300 dpi export is plenty |
-| **Format** | **Vector**: PDF/EPS for plots; TIFF for images | PNG (or vector pasted into the deck) |
-| **Text** | Must stay **editable** (real text, embedded fonts) | Editable helps, less critical |
-| **Color** | Colorblind-safe palette; check it survives grayscale | Same; ensure contrast on a projector |
-
-Representative print specs (**always confirm against the target venue's author guidelines**, the numbers drift):
-
-| Journal | 1-column | 2-column (full) | Max height | Min font | Raster res |
-|---|---|---|---|---|---|
-| Nature | 89 mm (3.50 in) | 183 mm (7.20 in) | 247 mm | 5–7 pt | 300 dpi photo / 600 dpi line |
-| Science | 55 mm (2.17 in) | 120 / 183 mm | ~183 mm | ~6–7 pt | ≥ 300 dpi |
-| Cell | 85 mm | 174 mm | 240 mm | 5–7 pt | 300 dpi |
-| IEEE | 88.9 mm (3.5 in) | 181.6 mm (7.16 in) | — | 8 pt | 300–600 dpi |
-| PLOS | 67 mm (2.63 in) min | 190 mm (7.5 in) max | 222 mm | 8–12 pt | 300–600 dpi |
-
-> **More publishers?** A full cross-publisher comparison — Wiley, Elsevier, Springer, ACS,
-> RSC, APS, Taylor & Francis and others, with widths, resolution, fonts and formats — is in
-> [Publisher figure specifications](#publisher-figure-specifications).
-
----
-
-## Contents
-
-**Part 1 · Set up before you plot**
-- [Figure size](#figure-size)
-- [Fonts & font size](#fonts--font-size)
-
-**Part 2 · How your settings look in print**
-- [Page layouts by publisher](#page-layouts-by-publisher)
-- [Publisher figure specifications](#publisher-figure-specifications)
-
-**Part 3 · Tune the figure content**
-- [Colour](#colour)
-- [Line weight & marker size](#line-weight--marker-size)
-- [Layout & multi-panel figures](#layout--multi-panel-figures)
-- [Presentations & slides](#presentations--slides)
-
-**Part 4 · Export the figure**
-- [Resolution (DPI) & file format](#resolution-dpi--file-format)
-- [Editable / vector content](#editable--vector-content)
-- [Applying the settings & exporting](#applying-the-settings--exporting)
-
-[References & further reading](#references--further-reading)
-
-[About this repository](#about-this-repository)
-
----
-
 ## Part 1 · Set up before you plot
 
 *Choices to lock in **before you draw anything** — the canvas size and the type. Get these right and the rest follows.*
@@ -793,6 +736,63 @@ fig.savefig(
 
 > Specific numbers (column widths, DPI floors, accepted formats) change and differ by venue —
 > **always open the target journal's "author/figure guidelines" before final export.**
+
+---
+
+## At a glance — cheat sheet
+
+| Aspect | Print figure (journal) | Slide / poster |
+|---|---|---|
+| **Width** | 1 column ≈ 89 mm (3.5 in); 2 columns ≈ 180 mm (7.1 in) | Fill the content area; design at 16:9 (13.33 × 7.5 in) |
+| **Height** | ≤ full page (~240 mm); usually keep panels short | — |
+| **Font** | 7 pt typical, **never below ~5 pt** | 18–28 pt body, 28–40 pt titles |
+| **Typeface** | Sans-serif (Arial / Helvetica) | Same sans-serif everywhere |
+| **Line width** | 0.5–1.0 pt (absolute min ~0.25 pt) | 1.5–3 pt (thicker for projection) |
+| **Raster resolution** | 300 dpi (photos), 600 dpi (line/combination) | 150–300 dpi export is plenty |
+| **Format** | **Vector**: PDF/EPS for plots; TIFF for images | PNG (or vector pasted into the deck) |
+| **Text** | Must stay **editable** (real text, embedded fonts) | Editable helps, less critical |
+| **Color** | Colorblind-safe palette; check it survives grayscale | Same; ensure contrast on a projector |
+
+Representative print specs (**always confirm against the target venue's author guidelines**, the numbers drift):
+
+| Journal | 1-column | 2-column (full) | Max height | Min font | Raster res |
+|---|---|---|---|---|---|
+| Nature | 89 mm (3.50 in) | 183 mm (7.20 in) | 247 mm | 5–7 pt | 300 dpi photo / 600 dpi line |
+| Science | 55 mm (2.17 in) | 120 / 183 mm | ~183 mm | ~6–7 pt | ≥ 300 dpi |
+| Cell | 85 mm | 174 mm | 240 mm | 5–7 pt | 300 dpi |
+| IEEE | 88.9 mm (3.5 in) | 181.6 mm (7.16 in) | — | 8 pt | 300–600 dpi |
+| PLOS | 67 mm (2.63 in) min | 190 mm (7.5 in) max | 222 mm | 8–12 pt | 300–600 dpi |
+
+> **More publishers?** A full cross-publisher comparison — Wiley, Elsevier, Springer, ACS,
+> RSC, APS, Taylor & Francis and others, with widths, resolution, fonts and formats — is in
+> [Publisher figure specifications](#publisher-figure-specifications).
+
+---
+
+## Contents
+
+**Part 1 · Set up before you plot**
+- [Figure size](#figure-size)
+- [Fonts & font size](#fonts--font-size)
+
+**Part 2 · How your settings look in print**
+- [Page layouts by publisher](#page-layouts-by-publisher)
+- [Publisher figure specifications](#publisher-figure-specifications)
+
+**Part 3 · Tune the figure content**
+- [Colour](#colour)
+- [Line weight & marker size](#line-weight--marker-size)
+- [Layout & multi-panel figures](#layout--multi-panel-figures)
+- [Presentations & slides](#presentations--slides)
+
+**Part 4 · Export the figure**
+- [Resolution (DPI) & file format](#resolution-dpi--file-format)
+- [Editable / vector content](#editable--vector-content)
+- [Applying the settings & exporting](#applying-the-settings--exporting)
+
+[References & further reading](#references--further-reading)
+
+[About this repository](#about-this-repository)
 
 ---
 
