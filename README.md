@@ -420,6 +420,9 @@ for ax, letter in zip(axes.flat, "ab"):
 ### Presentations & slides
 
 Slides invert several print rules — viewers are **far away** and see each slide for **seconds**.
+Drawn to scale, the same way the journal pages are above:
+
+![A 16:9 presentation slide drawn to scale (13.33 × 7.5 in): a big title, a few short bullets, and a sample figure that fills the content area with thick lines and large labels. Tags mark the slide-scale type sizes — title 28–40 pt, body and axis text 18–24 pt, data lines 1.5–3 pt — and dimension lines annotate the canvas.](slide_layout.png)
 
 - **Size:** design at **16:9** (13.33 × 7.5 in) — or 4:3 (10 × 7.5 in) for older projectors. Make
   figures fill the content area; don't shrink a print figure onto a slide.
@@ -656,6 +659,7 @@ rcParams; you never need it to follow the conventions.
 | **`README.md`** | The full guide — this document. |
 | **[`scientific.mplstyle`](scientific.mplstyle)** | Optional — bundles the guide's rcParams (Arial · 7 pt · Type-42 vector export · despined) into one `plt.style.use(...)` file. |
 | **[`publisher_page_layouts.py`](publisher_page_layouts.py)** | Generates the six per-publisher layouts (`layout_*.png/.pdf`) and the typeface specimen, drawn to scale. |
+| **[`slide_layout.py`](slide_layout.py)** | Generates the to-scale 16:9 presentation-slide schematic (`slide_layout.png/.pdf`). |
 | **[`rcparams_text_map.py`](rcparams_text_map.py)** | Generates the styling map — text-element → rcParam color map (top) + line/style/marker reference (bottom). |
 | **[`journal_layout_schematic.py`](journal_layout_schematic.py)** | Generates a single-page "figure anatomy" schematic. |
 
@@ -663,6 +667,7 @@ Reproduce (needs `numpy` + `matplotlib`; Arial improves the look, otherwise a bu
 
 ```bash
 python publisher_page_layouts.py      # -> layout_<publisher>.{png,pdf} (x6) + typeface_specimen.{png,pdf}
+python slide_layout.py                # -> slide_layout.{png,pdf}
 python journal_layout_schematic.py    # -> journal_layout_schematic.{pdf,png}
 python rcparams_text_map.py           # -> rcparams_text_map.{pdf,png}
 ```
