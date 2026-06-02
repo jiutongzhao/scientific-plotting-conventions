@@ -1,6 +1,6 @@
 # Scientific Plotting & Presentation Conventions
 
-What each major journal **requires** of a figure — size, resolution, fonts, formats, colour and
+What each major journal **requires** of a figure — size, resolution, fonts, formats, color and
 panel labels — and the **matplotlib commands** that meet those requirements, with to-scale
 schematics of how each publisher expects a figure to look. A style sheet is bundled for
 convenience, but the requirements and the commands are the point — not the style file.
@@ -96,13 +96,13 @@ mpl.rcParams.update({
 })
 ```
 
-The map below colours every text element by the rcParam that sets its size (**top** — x- and
-y-axis labels share a colour because both are `axes.labelsize`), previews line-width, line-style
+The map below colors every text element by the rcParam that sets its size (**top** — x- and
+y-axis labels share a color because both are `axes.labelsize`), previews line-width, line-style
 and marker-size options (**bottom** — see [Line weight & marker size](#line-weight--marker-size)),
 and is dimensioned with its own **`figsize`** (width × height in inches — the one size you set in
 inches, not points).
 
-![Top: each text element of a matplotlib figure coloured by the rcParam that sets its size, with a colour-matched key of the parameter names. Bottom: line widths (0.5–3 pt), line styles (solid/dashed/dotted/dash-dot) and marker sizes (3–12). The whole figure is dimensioned with its figsize (width × height in inches).](rcparams_text_map.png)
+![Top: each text element of a matplotlib figure colored by the rcParam that sets its size, with a color-matched key of the parameter names. Bottom: line widths (0.5–3 pt), line styles (solid/dashed/dotted/dash-dot) and marker sizes (3–12). The whole figure is dimensioned with its figsize (width × height in inches).](rcparams_text_map.png)
 
 > `findfont: Font family 'Arial' not found`? Arial isn't installed (common on Linux/WSL) — install
 > it (e.g. `msttcorefonts`), `addfont()` a `.ttf`, or rely on the **DejaVu Sans** fallback. For
@@ -200,10 +200,10 @@ Single columns cluster at **83–90 mm**, full width at **170–190 mm** — dra
 ~88–90 mm and full-width at ~180–190 mm and they fit nearly everywhere (Science's 55 mm single
 column is the main outlier).
 
-**Resolution, formats & colour.** DPI applies to **raster** content at final size; vector art is
+**Resolution, formats & color.** DPI applies to **raster** content at final size; vector art is
 resolution-free.
 
-| Publisher | Line art | Photo / halftone | Combination | Vector | Raster | Colour |
+| Publisher | Line art | Photo / halftone | Combination | Vector | Raster | Color |
 |---|---|---|---|---|---|---|
 | **Nature** ✔ | 600 | 300 | 600 | AI · EPS · PDF | TIFF | RGB (research) / CMYK (other) |
 | **Elsevier** ✔ | 1000 | 300 | 500 | EPS · PDF | TIFF · JPEG | RGB |
@@ -245,7 +245,7 @@ these defaults clear every row above:
 - **Font** — sans-serif, **≥ 7 pt** (meets Nature's floor, stays legible like IEEE).
 - **Vector PDF** with **Type 42 / TrueType** embedded fonts (see [Editable, vector text](#editable-vector-text)).
 - **Raster only where needed** — **≥ 600 dpi** line art, **≥ 300 dpi** photos.
-- **RGB** colour; convert to CMYK only if a print journal demands it.
+- **RGB** color; convert to CMYK only if a print journal demands it.
 
 The bundled [`scientific.mplstyle`](scientific.mplstyle) already encodes these. Size per publisher
 with one small helper:
@@ -270,7 +270,7 @@ fig, ax = plt.subplots(figsize=fig_size("elsevier", full=True))   # 190 mm wide
 
 **Panel labels by publisher.** Multi-panel figures get a letter per panel, but house style differs
 on **case** (`a` vs `A`), **weight** (bold vs regular), **brackets** (`a`, `(a)`, `a)`) and
-**position** (top-left corner vs centred *below* the panel) — exactly the styles drawn above:
+**position** (top-left corner vs centered *below* the panel) — exactly the styles drawn above:
 
 | Publisher | Looks like | Case | Bold | Brackets | Position |
 |---|---|---|---|---|---|
@@ -290,7 +290,7 @@ PANEL_STYLE = {   # (case, brackets, bold, position) — representative house st
     "nature":   ("lower", "none",  True,  "tl"),     #  a    bold, no brackets
     "elsevier": ("lower", "round", False, "tl"),     # (a)
     "springer": ("lower", "round", True,  "tl"),     # (a)  bold
-    "ieee":     ("lower", "round", False, "below"),  # (a)  centred under the panel
+    "ieee":     ("lower", "round", False, "below"),  # (a)  centered under the panel
     "wiley":    ("upper", "round", False, "tl"),     # (A)
     "science":  ("upper", "none",  True,  "tl"),     #  A    bold, no brackets
 }
@@ -301,7 +301,7 @@ def panel_label(ax, i, journal="nature", size=8):
     ch  = chr((65 if case == "upper" else 97) + i)              # A.. or a..
     txt = {"round": f"({ch})", "square": f"[{ch}]", "none": ch}[brackets]
     kw  = dict(fontsize=size, fontweight=("bold" if bold else "normal"))
-    if pos == "below":                       # IEEE: centred just under the axes
+    if pos == "below":                       # IEEE: centered just under the axes
         ax.text(0.5, -0.16, txt, transform=ax.transAxes, ha="center", va="top", **kw)
     else:                                    # top-left, just inside the corner
         ax.text(0.02, 0.98, txt, transform=ax.transAxes, ha="left", va="top", **kw)
@@ -317,7 +317,7 @@ panel labels — one short block makes a compliant figure; swapping `journal` do
 
 ```python
 import matplotlib.pyplot as plt
-plt.style.use("scientific.mplstyle")     # Arial · 7 pt · Type-42 vector export · Wong colours
+plt.style.use("scientific.mplstyle")     # Arial · 7 pt · Type-42 vector export · Wong colors
 
 journal = "ieee"                          # swap to "nature", "elsevier", …
 fig, axes = plt.subplots(1, 2, layout="constrained",
@@ -326,7 +326,7 @@ for i, ax in enumerate(axes.flat):
     ax.plot(...)                          # your data
     ax.set_xlabel("Time (s)")             # quantity + unit
     ax.set_ylabel("Signal (a.u.)")
-    panel_label(ax, i, journal)           # IEEE → (a), (b) centred below each panel
+    panel_label(ax, i, journal)           # IEEE → (a), (b) centered below each panel
 
 fig.savefig("figure.pdf")                 # vector + embedded editable fonts → submit this
 ```
@@ -343,23 +343,23 @@ authors → artwork* on each publisher's site.
 
 ## Part 3 · Tune the figure content
 
-*Refine the figure itself. Journals rarely mandate these — optimise for legibility and let the figure read in grayscale.*
+*Refine the figure itself. Journals rarely mandate these — optimize for legibility and let the figure read in grayscale.*
 
-### Colour
+### Color
 
-- **Use a colorblind-safe palette.** ~8% of men have a colour-vision deficiency. The
-  **Wong / Okabe–Ito** 8-colour palette is the standard safe choice:
+- **Use a colorblind-safe palette.** ~8% of men have a color-vision deficiency. The
+  **Wong / Okabe–Ito** 8-color palette is the standard safe choice:
 
-  | Black | Orange | Sky blue | Bluish green | Yellow | Blue | Vermillion | Reddish purple |
+  | $\textcolor{#000000}{\textsf{Black}}$ | $\textcolor{#E69F00}{\textsf{Orange}}$ | $\textcolor{#56B4E9}{\textsf{Sky blue}}$ | $\textcolor{#009E73}{\textsf{Bluish green}}$ | $\textcolor{#F0E442}{\textsf{Yellow}}$ | $\textcolor{#0072B2}{\textsf{Blue}}$ | $\textcolor{#D55E00}{\textsf{Vermillion}}$ | $\textcolor{#CC79A7}{\textsf{Reddish purple}}$ |
   |---|---|---|---|---|---|---|---|
   | `#000000` | `#E69F00` | `#56B4E9` | `#009E73` | `#F0E442` | `#0072B2` | `#D55E00` | `#CC79A7` |
 
-- **Encode redundantly** — pair colour with line style, marker shape or direct labels, so the
-  figure still works in **grayscale** and for colourblind readers.
+- **Encode redundantly** — pair color with line style, marker shape or direct labels, so the
+  figure still works in **grayscale** and for colorblind readers.
 - **Colormaps:** use **perceptually uniform** maps — `viridis`/`cividis`/`magma`/`plasma` for
   sequential, `coolwarm`/`RdBu` for diverging. **Avoid `jet`/rainbow** (invents structure, not
-  colourblind-safe); `cividis` is the most colourblind-friendly built-in.
-- **Print vs screen:** journals print in CMYK; keep colours moderately saturated and check a proof
+  colorblind-safe); `cividis` is the most colorblind-friendly built-in.
+- **Print vs screen:** journals print in CMYK; keep colors moderately saturated and check a proof
   if required.
 
 ```python
@@ -373,7 +373,7 @@ mpl.rcParams["image.cmap"] = "viridis"   # default for imshow/pcolormesh
 > **High-contrast alternative — SciencePlots `high-vis`.** The schematics here use the bright
 > [SciencePlots](https://github.com/garrettj403/SciencePlots) `high-vis` cycle —
 > `#0d49fb #e6091c #26eb47 #8936df #fec32d #25d7fd`. Punchy and easy to tell apart (good for
-> projection) but **not** colourblind-safe — prefer Wong for accessible figures. SciencePlots also
+> projection) but **not** colorblind-safe — prefer Wong for accessible figures. SciencePlots also
 > ships journal-matching styles (see [References](#references)).
 
 ### Line weight & marker size
@@ -464,7 +464,7 @@ mpl.rcParams.update({
 
 | Content (raster, at final size) | Min DPI | | Format | Kind | Best for |
 |---|---|---|---|---|---|
-| Photographs (colour / grayscale) | 300 | | **PDF** | Vector | Final plots, LaTeX; embed Type 42 |
+| Photographs (color / grayscale) | 300 | | **PDF** | Vector | Final plots, LaTeX; embed Type 42 |
 | Line art (text, axes, thin lines) | 600–1200 | | **SVG** | Vector | Web; hand-editing (`svg.fonttype:none`) |
 | Combination (photo + labels) | 600 | | **EPS** | Vector | Legacy submission (no alpha — flatten) |
 | Screen / slides only | 150 (≈96 ok) | | **TIFF** | Raster | Image-panel submission (LZW, 300–600) |
@@ -487,7 +487,7 @@ fig.savefig("figure.pdf", dpi=600)             # ...at this dpi, labels stay vec
 
 ### Editable, vector text
 
-Production teams (and co-authors) must **edit the text** of a figure — fix a typo, recolour a line
+Production teams (and co-authors) must **edit the text** of a figure — fix a typo, recolor a line
 — without your script. Two things make that possible: export **vector** (PDF/SVG/EPS), and keep
 **text as text with embedded fonts** (not outlined, not rasterized).
 
@@ -604,7 +604,7 @@ fig.savefig(
     dpi=600,               # only affects rasterized layers
     bbox_inches=None,      # None/'standard' = keep exact figsize (see the size gotcha);
                            #   "tight" crops/resizes the figure
-    transparent=True,      # no white box on a coloured slide
+    transparent=True,      # no white box on a colored slide
 )
 plt.rcParams["savefig.bbox"] = "standard"   # reset if a style package forced tight cropping
 ```
@@ -614,7 +614,7 @@ plt.rcParams["savefig.bbox"] = "standard"   # reset if a style package forced ti
 ## References
 
 - **Wong, B.** "Points of view: Color blindness." *Nature Methods* **8**, 441 (2011) — source of
-  the 8-colour colourblind-safe palette.
+  the 8-color colorblind-safe palette.
 - **Rougier, Droettboom & Bourne.** "Ten Simple Rules for Better Figures." *PLOS Comput. Biol.*
   **10**, e1003833 (2014).
 - **Matplotlib docs** — *Customizing with style sheets and rcParams*, *Text rendering and fonts*,
@@ -639,7 +639,7 @@ plt.rcParams["savefig.bbox"] = "standard"   # reset if a style package forced ti
 | **Raster res** | 300 dpi photos, 600 dpi line/combination | 150–300 dpi |
 | **Format** | **Vector** PDF/EPS for plots; TIFF for images | PNG (or vector pasted in) |
 | **Text** | Must stay **editable** (real text, embedded fonts) | Editable helps, less critical |
-| **Colour** | Colourblind-safe; survives grayscale | Same; ensure projector contrast |
+| **Color** | Colorblind-safe; survives grayscale | Same; ensure projector contrast |
 
 Per-publisher numbers are in [Publisher figure specifications](#publisher-figure-specifications).
 
@@ -656,7 +656,7 @@ rcParams; you never need it to follow the conventions.
 | **`README.md`** | The full guide — this document. |
 | **[`scientific.mplstyle`](scientific.mplstyle)** | Optional — bundles the guide's rcParams (Arial · 7 pt · Type-42 vector export · despined) into one `plt.style.use(...)` file. |
 | **[`publisher_page_layouts.py`](publisher_page_layouts.py)** | Generates the six per-publisher layouts (`layout_*.png/.pdf`) and the typeface specimen, drawn to scale. |
-| **[`rcparams_text_map.py`](rcparams_text_map.py)** | Generates the styling map — text-element → rcParam colour map (top) + line/style/marker reference (bottom). |
+| **[`rcparams_text_map.py`](rcparams_text_map.py)** | Generates the styling map — text-element → rcParam color map (top) + line/style/marker reference (bottom). |
 | **[`journal_layout_schematic.py`](journal_layout_schematic.py)** | Generates a single-page "figure anatomy" schematic. |
 
 Reproduce (needs `numpy` + `matplotlib`; Arial improves the look, otherwise a bundled sans-serif is used):
