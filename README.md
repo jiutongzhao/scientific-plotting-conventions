@@ -170,73 +170,24 @@ has no native tabs, so each layout is a **collapsible section — click a publis
 
 ### Publisher figure specifications
 
-Publishers ask for slightly different widths, resolutions, fonts and formats. The tables below
-collect the major ones so you can size a figure once and trust it will drop in. Rows marked **✔**
-were verified in 2026 against the publisher's official artwork page (**Nature, Elsevier, IEEE**);
-unmarked rows are representative values that drift by journal — **always open your target journal's
-artwork guidelines before final export.** The [layouts above](#page-layouts-by-publisher) show
-these specs drawn to scale, via [`publisher_page_layouts.py`](scripts/publisher_page_layouts.py).
+Publishers differ slightly on widths, resolution, fonts and formats. The **consensus below clears
+almost every journal**; the full per-publisher numbers are tabulated at the end — see
+[Publisher specifications](#publisher-specifications). Figures marked **✔** were verified in 2026
+against the official artwork pages (Nature, Elsevier, IEEE); the rest are representative and drift by
+journal, so **always check your target journal's guidelines before final export.** The
+[layouts above](#page-layouts-by-publisher) show these specs drawn to scale.
 
-**Figure widths & maximum height.**
-
-| Publisher | Single col | Mid (1.5 col) | Double / full width | Max height |
-|---|---|---|---|---|
-| **Nature** ✔ | 88 mm | — | 180 mm | caption-dependent, ≈130–225 mm |
-| **Elsevier** ✔ | 90 mm | 140 mm | 190 mm | — (min usable 30 mm) |
-| **IEEE** ✔ | 88.9 mm (3.5″) | — | 182 mm (7.16″) | — |
-| Springer (general) | 84 mm | 129 mm | 174 mm | ≈234 mm |
-| Wiley | ≈80 mm | — | ≈176 mm | journal-dependent |
-| Science (AAAS) | 55 mm | 120 mm | 183 mm | ≈240 mm |
-| ACS | 85 mm (3.33″) | — | 178 mm (7″) | 241 mm (9.5″) |
-| APS (Phys. Rev.) | 86 mm | — | 178 mm | — |
-| RSC | 83 mm | — | 171 mm | — |
-| Optica (OSA) | 83 mm | — | 165 mm | — |
-| PLOS | 67 mm (min) | — | 190 mm (max) | 222 mm (8.75″) |
-
-Single columns cluster at **83–90 mm**, full width at **170–190 mm** — draw single-column at
-~88–90 mm and full-width at ~180–190 mm and they fit nearly everywhere (Science's 55 mm single
-column is the main outlier).
-
-**Resolution, formats & color.** DPI applies to **raster** content at final size; vector art is
-resolution-free.
-
-| Publisher | Line art | Photo / halftone | Combination | Vector | Raster | Color |
-|---|---|---|---|---|---|---|
-| **Nature** ✔ | 600 | 300 | 600 | AI · EPS · PDF | TIFF | RGB (research) / CMYK (other) |
-| **Elsevier** ✔ | 1000 | 300 | 500 | EPS · PDF | TIFF · JPEG | RGB |
-| **IEEE** ✔ | 600 (B/W) | 300 (color/gray) | — | PS · EPS · PDF | PNG · TIFF | not mandated |
-| Springer | 1200 | 300 | 600 | EPS · PDF | TIFF | RGB |
-| Wiley | 600–1200 | 300 | 600 | EPS · PDF | TIFF | RGB → CMYK |
-| Science (AAAS) | vector pref. | 300+ | 600 | AI · EPS · PDF | TIFF | RGB |
-| ACS | 1200 | 300 | 600 | EPS · PDF | TIFF | RGB |
-| RSC | 600+ | 300 | 600 | EPS · PDF | TIFF | RGB |
-| Taylor & Francis | 1200 | 300 | 600 | EPS · PDF | TIFF · JPEG | RGB / CMYK |
-| APS (Phys. Rev.) | 600 | 300 | — | EPS · PS · PDF | TIFF | RGB |
-| PLOS | — | 300–600 | — | EPS | TIFF | RGB |
-
-Consensus: photos **300 dpi**, line art **600–1200 dpi**, combination **500–600 dpi**; **EPS/PDF**
-vector accepted everywhere; submit **RGB** unless a journal asks for CMYK.
-
-**Fonts & sizes (per publisher).**
-
-| Publisher | Typeface | Size (at final size) | Notes |
-|---|---|---|---|
-| **Nature** ✔ | Helvetica / Arial | 5–7 pt | sans-serif only |
-| **Elsevier** ✔ | Arial, Times, Courier, Symbol | ≈6–8 pt | embed fonts |
-| **IEEE** ✔ | Helvetica, Arial, Times, Cambria, Symbol | 9–10 pt | outline text **or** embed fonts |
-| Springer | Helvetica / Arial | ≈8 pt (lettering 2–3 mm) | consistent across panels |
-| Wiley | sans-serif (Arial / Helvetica) | ≥ ~7 pt | varies by journal |
-| Science (AAAS) | Helvetica / Arial | 5–7 pt | panel labels bold |
-| ACS | Helvetica / Arial | 4.5–12 pt | |
-| RSC | sans-serif | 7–8 pt | |
-| PLOS | Arial | 8–12 pt | |
-
-Consensus: **sans-serif (Arial / Helvetica)**, roughly **5–8 pt** in print (IEEE runs larger at
-9–10 pt). Keep text as **editable, embedded fonts — never Type 3** (see
-[Editable, vector text](#editable-vector-text)).
+- **Widths** — single columns cluster at **83–90 mm**, full width at **170–190 mm**; draw single at
+  ~88–90 mm and full at ~180–190 mm and they fit nearly everywhere (Science's 55 mm single is the outlier).
+- **Resolution, formats & color** — DPI is for **raster** content at final size (vector is
+  resolution-free): photos **300 dpi**, line art **600–1200 dpi**, combination **500–600 dpi**;
+  **EPS/PDF** vector accepted everywhere; submit **RGB** unless a journal asks for CMYK.
+- **Fonts** — **sans-serif (Arial / Helvetica)**, roughly **5–8 pt** in print (IEEE larger at
+  9–10 pt); keep text **editable, embedded — never Type 3** (see
+  [Editable, vector text](#editable-vector-text)).
 
 **One export that satisfies (almost) everyone.** You rarely need a different file per publisher —
-these defaults clear every row above:
+these defaults clear almost every journal (full grid in [Publisher specifications](#publisher-specifications)):
 
 - **Width** — single column **88–90 mm**, full width **180–190 mm**.
 - **Font** — sans-serif, **≥ 7 pt** (meets Nature's floor, stays legible like IEEE).
@@ -248,7 +199,7 @@ The bundled [`convention.mplstyle`](convention.mplstyle) already encodes these. 
 with one small helper:
 
 ```python
-WIDTHS_MM = {            # (single, full-width) in mm — see the widths table
+WIDTHS_MM = {            # (single, full-width) in mm — see Publisher specifications
     "nature": (88, 180), "elsevier": (90, 190), "ieee": (88.9, 182),
     "springer": (84, 174), "wiley": (80, 176), "science": (55, 183),
     "acs": (85, 178), "aps": (86, 178), "rsc": (83, 171),
@@ -267,18 +218,9 @@ fig, ax = plt.subplots(figsize=fig_size("elsevier", full=True))   # 190 mm wide
 
 **Panel labels by publisher.** Multi-panel figures get a letter per panel, but house style differs
 on **case** (`a` vs `A`), **weight** (bold vs regular), **brackets** (`a`, `(a)`, `a)`) and
-**position** (top-left corner vs centered *below* the panel) — exactly the styles drawn above:
-
-| Publisher | Looks like | Case | Bold | Brackets | Position |
-|---|---|---|---|---|---|
-| **Nature** | **a** | lower | ✔ | none | top-left |
-| **Elsevier** | (a) | lower | — | round | top-left |
-| **Springer** | **(a)** | lower | ✔ | round | top-left |
-| **IEEE** | (a) | lower | — | round | **below** the panel |
-| **Wiley** | (A) | upper | — | round | top-left |
-| **Science (AAAS)** | **A** | upper | ✔ | none | top-left |
-
-A small helper stamps a correctly-styled label onto any axes (`i` is 0-based: `0 → a/A`):
+**position** (top-left corner vs centered *below* the panel) — the styles drawn above and tabulated
+in [Publisher specifications](#publisher-specifications). A small helper stamps a correctly-styled
+label onto any axes (`i` is 0-based: `0 → a/A`):
 
 ```python
 import matplotlib.pyplot as plt
@@ -327,14 +269,6 @@ for i, ax in enumerate(axes.flat):
 
 fig.savefig("figure.pdf")                 # vector + embedded editable fonts → submit this
 ```
-
-**Official artwork pages.**
-[Nature](https://www.nature.com/documents/NRJs-guide-to-preparing-final-artwork.pdf) ·
-[Elsevier](https://www.elsevier.com/about/policies-and-standards/author/artwork-and-media-instructions) ·
-[IEEE](https://journals.ieeeauthorcenter.ieee.org/create-your-ieee-journal-article/create-graphics-for-your-article/) ·
-[ACS](https://pubs.acs.org/page/4authors/submission/graphics_prep.html) ·
-Wiley, Science/AAAS, RSC, Taylor & Francis, APS, PLOS, Optica — *Author Services / Instructions for
-authors → artwork* on each publisher's site.
 
 ---
 
@@ -598,7 +532,63 @@ plt.rcParams["savefig.bbox"] = "standard"   # reset if a style package forced ti
 | **Text** | Must stay **editable** (real text, embedded fonts) | Editable helps, less critical |
 | **Color** | Colorblind-safe; survives grayscale | Same; ensure projector contrast |
 
-Per-publisher numbers are in [Publisher figure specifications](#publisher-figure-specifications).
+Per-publisher numbers are in [Publisher specifications](#publisher-specifications) below.
+
+---
+
+## Publisher specifications
+
+The full per-publisher grid, transposed so publishers run across the columns — these tables are
+**wide; scroll sideways** if your viewport clips them. **✔** = verified in 2026 against the official
+artwork page; the rest are representative and drift by journal, so **always check your target
+journal's guidelines before final export.** Drawn to scale by
+[`publisher_page_layouts.py`](scripts/publisher_page_layouts.py).
+
+**Figure widths & maximum height** (mm)
+
+| | Nature ✔ | Elsevier ✔ | IEEE ✔ | Springer | Wiley | Science | ACS | APS | RSC | Optica | PLOS |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| **Single col** | 88 | 90 | 88.9 | 84 | ≈80 | 55 | 85 | 86 | 83 | 83 | 67 min |
+| **1.5 col** | — | 140 | — | 129 | — | 120 | — | — | — | — | — |
+| **Double** | 180 | 190 | 182 | 174 | ≈176 | 183 | 178 | 178 | 171 | 165 | 190 max |
+| **Max height** | 130–225 | — | — | ≈234 | — | ≈240 | 241 | — | — | — | 222 |
+
+**Resolution, formats & color** (DPI applies to raster at final size; vector is resolution-free)
+
+| | Nature ✔ | Elsevier ✔ | IEEE ✔ | Springer | Wiley | Science | ACS | RSC | T&F | APS | PLOS |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| **Line-art dpi** | 600 | 1000 | 600 | 1200 | 600–1200 | vector | 1200 | 600+ | 1200 | 600 | — |
+| **Photo dpi** | 300 | 300 | 300 | 300 | 300 | 300+ | 300 | 300 | 300 | 300 | 300–600 |
+| **Combo dpi** | 600 | 500 | — | 600 | 600 | 600 | 600 | 600 | 600 | — | — |
+| **Vector** | AI·EPS·PDF | EPS·PDF | PS·EPS·PDF | EPS·PDF | EPS·PDF | AI·EPS·PDF | EPS·PDF | EPS·PDF | EPS·PDF | EPS·PS·PDF | EPS |
+| **Raster** | TIFF | TIFF·JPEG | PNG·TIFF | TIFF | TIFF | TIFF | TIFF | TIFF | TIFF·JPEG | TIFF | TIFF |
+| **Color** | RGB/CMYK | RGB | — | RGB | RGB→CMYK | RGB | RGB | RGB | RGB/CMYK | RGB | RGB |
+
+**Fonts** (at final size)
+
+| | Nature ✔ | Elsevier ✔ | IEEE ✔ | Springer | Wiley | Science | ACS | RSC | PLOS |
+|---|---|---|---|---|---|---|---|---|---|
+| **Typeface** | Helv/Arial | Arial, Times, … | Helv, Arial, … | Helv/Arial | sans-serif | Helv/Arial | Helv/Arial | sans-serif | Arial |
+| **Size (pt)** | 5–7 | 6–8 | 9–10 | ≈8 | ≥7 | 5–7 | 4.5–12 | 7–8 | 8–12 |
+| **Notes** | sans only | embed fonts | outline/embed | 2–3 mm letters | by journal | labels bold | — | — | — |
+
+**Panel labels**
+
+| | Nature | Elsevier | Springer | IEEE | Wiley | Science |
+|---|---|---|---|---|---|---|
+| **Looks like** | **a** | (a) | **(a)** | (a) | (A) | **A** |
+| **Case** | lower | lower | lower | lower | upper | upper |
+| **Bold** | ✔ | — | ✔ | — | — | ✔ |
+| **Brackets** | none | round | round | round | round | none |
+| **Position** | top-left | top-left | top-left | below | top-left | top-left |
+
+**Official artwork pages.**
+[Nature](https://www.nature.com/documents/NRJs-guide-to-preparing-final-artwork.pdf) ·
+[Elsevier](https://www.elsevier.com/about/policies-and-standards/author/artwork-and-media-instructions) ·
+[IEEE](https://journals.ieeeauthorcenter.ieee.org/create-your-ieee-journal-article/create-graphics-for-your-article/) ·
+[ACS](https://pubs.acs.org/page/4authors/submission/graphics_prep.html) ·
+Wiley, Science/AAAS, RSC, Taylor & Francis, APS, PLOS, Optica — *Author Services / Instructions for
+authors → artwork* on each publisher's site.
 
 ---
 

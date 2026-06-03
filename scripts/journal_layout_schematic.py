@@ -198,9 +198,10 @@ greek(*C2, 132, 142)
 greek(*C1, 222, 258)
 greek(*C2, 222, 258)
 
-# ---- minor grid dimensions ----
-dim_h(C1[1], C2[0], Yp(172), "", ext=1.2)
-ax.text((C1[1] + C2[0]) / 2 + 4.5, Yp(172), "4 mm gutter", color=ACCENT,
+# ---- minor grid dimensions (in the clear gap below the 1-column dim, so the
+#      label doesn't fall behind a figure panel) ----
+dim_h(C1[1], C2[0], Yp(128), "", ext=1.2)
+ax.text((C1[1] + C2[0]) / 2 + 4.5, Yp(128), "4 mm gutter", color=ACCENT,
         fontsize=6.0, ha="left", va="center", fontweight="bold")
 dim_h(0, W, Yp(269), "210 mm trim", above=False)
 
