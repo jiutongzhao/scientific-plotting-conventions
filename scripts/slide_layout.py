@@ -89,7 +89,7 @@ def render():
 
     # ---- bullets -------------------------------------------------------------
     bullets = ["Big type, thick lines", "One idea per slide",
-               "High contrast, little clutter"]
+               "High contrast"]
     by = SH - 2.75
     for k, b in enumerate(bullets):
         ax.plot([mx + 0.13], [by - 0.02], marker="o", ms=6.5,
@@ -100,7 +100,7 @@ def render():
             color=SUB, fontweight="bold", va="top", zorder=4)
 
     # ---- the figure fills the content area ----------------------------------
-    fx0, fy0, fw, fh = 5.55, 0.85, 7.25, 4.55
+    fx0, fy0, fw, fh = 5.95, 0.85, 6.8, 4.55   # nudged right of the bullet column
     sub = ax.inset_axes([fx0, fy0, fw, fh], transform=ax.transData)
     sub.set_zorder(3); slide_plot(sub)
     ax.text(fx0, fy0 + fh + 0.5, "figure fills the content area · data lines 1.5–3 pt",

@@ -82,6 +82,7 @@ spec = fig.add_subplot(gs[2]); spec.axis("off")
 x = np.linspace(0, 10, 200)
 ax.plot(x, np.sin(x), color="#3a3a3a", label="signal A")
 ax.plot(x, 0.7 * np.cos(x), color="#9a9a9a", ls="--", label="signal B")
+ax.set_ylim(-1.1, 1.8)   # top headroom so the frameless legend clears the curves
 
 ax.set_title("Axes title  ·  ax.set_title()", color=C["axes.titlesize"], fontweight="bold")
 ax.set_xlabel("x-axis label (unit)", color=C["axes.labelsize"])
