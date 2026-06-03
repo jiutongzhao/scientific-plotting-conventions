@@ -114,165 +114,7 @@ you set in inches, not points).
 
 ---
 
-## Part 2 · How your settings look in print
-
-*The payoff — how those choices sit on each journal's page, drawn to scale, and the per-publisher specs behind them.*
-
-### Page layouts by publisher
-
-Six publishers drawn **to scale** — paper size and margins, a full-width multi-panel figure and a
-part-/single-column figure at each journal's true widths and a distinct aspect ratio, with panel
-labels and captions in each house style and greeked body text. A **blue** tag marks the full-width
-figure, an **orange** tag the single-/part-width one; the dashed box is the text area. GitHub
-has no native tabs, so each layout is a **collapsible section — click a publisher to expand.**
-
-<details open>
-<summary><b>Nature</b> — A4, two-column · panel labels: bold lowercase a, b, c</summary>
-
-![Nature page layout, drawn to scale](figures/layout_nature.png)
-
-</details>
-
-<details>
-<summary><b>Elsevier</b> — A4, two-column · panel labels: (a), (b)</summary>
-
-![Elsevier page layout, drawn to scale](figures/layout_elsevier.png)
-
-</details>
-
-<details>
-<summary><b>Springer</b> — A4, two-column · panel labels: bold (a), (b)</summary>
-
-![Springer page layout, drawn to scale](figures/layout_springer.png)
-
-</details>
-
-<details>
-<summary><b>IEEE</b> — US Letter, two-column · panel labels: (a) below each panel</summary>
-
-![IEEE page layout, drawn to scale](figures/layout_ieee.png)
-
-</details>
-
-<details>
-<summary><b>Wiley</b> — US Letter, single-column · panel labels: (A), (B)</summary>
-
-![Wiley single-column page layout, drawn to scale](figures/layout_wiley.png)
-
-</details>
-
-<details>
-<summary><b>Science (AAAS)</b> — US Letter, three-column · panel labels: bold A, B</summary>
-
-![Science (AAAS) page layout, drawn to scale](figures/layout_science.png)
-
-</details>
-
-### Publisher figure specifications
-
-Publishers differ slightly on widths, resolution, fonts and formats. The **consensus below clears
-almost every journal**; the full per-publisher numbers are tabulated at the end — see
-[Publisher specifications](#publisher-specifications). Figures marked **✔** were verified in 2026
-against the official artwork pages (Nature, Elsevier, IEEE); the rest are representative and drift by
-journal, so **always check your target journal's guidelines before final export.** The
-[layouts above](#page-layouts-by-publisher) show these specs drawn to scale.
-
-- **Widths** — single columns cluster at **83–90 mm**, full width at **170–190 mm**; draw single at
-  ~88–90 mm and full at ~180–190 mm and they fit nearly everywhere (Science's 55 mm single is the outlier).
-- **Resolution, formats & color** — DPI is for **raster** content at final size (vector is
-  resolution-free): photos **300 dpi**, line art **600–1200 dpi**, combination **500–600 dpi**;
-  **EPS/PDF** vector accepted everywhere; submit **RGB** unless a journal asks for CMYK.
-- **Fonts** — **sans-serif (Arial / Helvetica)**, roughly **5–8 pt** in print (IEEE larger at
-  9–10 pt); keep text **editable, embedded — never Type 3** (see
-  [Editable, vector text](#editable-vector-text)).
-
-**One export that satisfies (almost) everyone.** You rarely need a different file per publisher —
-these defaults clear almost every journal (full grid in [Publisher specifications](#publisher-specifications)):
-
-- **Width** — single column **88–90 mm**, full width **180–190 mm**.
-- **Font** — sans-serif, **≥ 7 pt** (meets Nature's floor, stays legible like IEEE).
-- **Vector PDF** with **Type 42 / TrueType** embedded fonts (see [Editable, vector text](#editable-vector-text)).
-- **Raster only where needed** — **≥ 600 dpi** line art, **≥ 300 dpi** photos.
-- **RGB** color; convert to CMYK only if a print journal demands it.
-
-The bundled [`convention.mplstyle`](convention.mplstyle) already encodes these. Size per publisher
-with one small helper:
-
-```python
-WIDTHS_MM = {            # (single, full-width) in mm — see Publisher specifications
-    "nature": (88, 180), "elsevier": (90, 190), "ieee": (88.9, 182),
-    "springer": (84, 174), "wiley": (80, 176), "science": (55, 183),
-    "acs": (85, 178), "aps": (86, 178), "rsc": (83, 171),
-    "optica": (83, 165), "plos": (67, 190),
-}
-
-def fig_size(publisher="nature", full=False, aspect=0.72):
-    """(width, height) in inches for a publisher's column width."""
-    w_in = WIDTHS_MM[publisher][1 if full else 0] / 25.4
-    return (w_in, w_in * aspect)
-
-import matplotlib.pyplot as plt
-plt.style.use("convention.mplstyle")
-fig, ax = plt.subplots(figsize=fig_size("elsevier", full=True))   # 190 mm wide
-```
-
-**Panel labels by publisher.** Multi-panel figures get a letter per panel, but house style differs
-on **case** (`a` vs `A`), **weight** (bold vs regular), **brackets** (`a`, `(a)`, `a)`) and
-**position** (top-left corner vs centered *below* the panel) — the styles drawn above and tabulated
-in [Publisher specifications](#publisher-specifications). A small helper stamps a correctly-styled
-label onto any axes (`i` is 0-based: `0 → a/A`):
-
-```python
-import matplotlib.pyplot as plt
-
-PANEL_STYLE = {   # (case, brackets, bold, position) — representative house styles
-    "nature":   ("lower", "none",  True,  "tl"),     #  a    bold, no brackets
-    "elsevier": ("lower", "round", False, "tl"),     # (a)
-    "springer": ("lower", "round", True,  "tl"),     # (a)  bold
-    "ieee":     ("lower", "round", False, "below"),  # (a)  centered under the panel
-    "wiley":    ("upper", "round", False, "tl"),     # (A)
-    "science":  ("upper", "none",  True,  "tl"),     #  A    bold, no brackets
-}
-
-def panel_label(ax, i, journal="nature", size=8):
-    """Add a sub-panel label in `journal`'s house style. i is 0-based (0 -> a/A)."""
-    case, brackets, bold, pos = PANEL_STYLE[journal]
-    ch  = chr((65 if case == "upper" else 97) + i)              # A.. or a..
-    txt = {"round": f"({ch})", "square": f"[{ch}]", "none": ch}[brackets]
-    kw  = dict(fontsize=size, fontweight=("bold" if bold else "normal"))
-    if pos == "below":                       # IEEE: centered just under the axes
-        ax.text(0.5, -0.16, txt, transform=ax.transAxes, ha="center", va="top", **kw)
-    else:                                    # top-left, just inside the corner
-        ax.text(0.02, 0.98, txt, transform=ax.transAxes, ha="left", va="top", **kw)
-```
-
-> Conventions vary **between journals of the same publisher** and drift over time — treat this as a
-> starting point. A corner label (`0.02, 0.98`) can sit on data; placing it just *outside* the axes
-> (`-0.08, 1.04` with `layout="constrained"`) avoids overlap. Submit the figure **caption** as
-> manuscript text, not inside the artwork — only the **panel letters** belong in the figure file.
-
-**One publisher, end to end.** Width + the house font & vector export (`convention.mplstyle`) +
-panel labels — one short block makes a compliant figure; swapping `journal` does the rest:
-
-```python
-import matplotlib.pyplot as plt
-plt.style.use("convention.mplstyle")     # DejaVu · 6 pt · Type-42 vector export · high-vis colors
-
-journal = "ieee"                          # swap to "nature", "elsevier", …
-fig, axes = plt.subplots(1, 2, layout="constrained",
-                         figsize=fig_size(journal, full=True, aspect=0.42))   # 182 mm wide
-for i, ax in enumerate(axes.flat):
-    ax.plot(...)                          # your data
-    ax.set_xlabel("Time (s)")             # quantity + unit
-    ax.set_ylabel("Signal (a.u.)")
-    panel_label(ax, i, journal)           # IEEE → (a), (b) centered below each panel
-
-fig.savefig("figure.pdf")                 # vector + embedded editable fonts → submit this
-```
-
----
-
-## Part 3 · Tune the figure content
+## Part 2 · Tune the figure content
 
 *Refine the figure itself. Journals rarely mandate these — optimize for legibility and let the figure read in grayscale.*
 
@@ -384,7 +226,7 @@ mpl.rcParams.update({
 
 ---
 
-## Part 4 · Export the figure
+## Part 3 · Export the figure
 
 *Write the file so the text stays editable, the vectors stay sharp, and nothing pixelates.*
 
@@ -536,7 +378,171 @@ Per-publisher numbers are in [Publisher specifications](#publisher-specification
 
 ---
 
-## Publisher specifications
+## Appendix · Print layouts & full specs
+
+*Moved out of the main flow — reference only. Every section below is **collapsed by default**; click to open.*
+
+### Page layouts by publisher
+
+Six publishers drawn **to scale** — paper size and margins, a full-width multi-panel figure and a
+part-/single-column figure at each journal's true widths and a distinct aspect ratio, with panel
+labels and captions in each house style and greeked body text. A **blue** tag marks the full-width
+figure, an **orange** tag the single-/part-width one; the dashed box is the text area. GitHub
+has no native tabs, so each layout is a **collapsible section — click a publisher to expand.**
+
+<details>
+<summary><b>Nature</b> — A4, two-column · panel labels: bold lowercase a, b, c</summary>
+
+![Nature page layout, drawn to scale](figures/layout_nature.png)
+
+</details>
+
+<details>
+<summary><b>Elsevier</b> — A4, two-column · panel labels: (a), (b)</summary>
+
+![Elsevier page layout, drawn to scale](figures/layout_elsevier.png)
+
+</details>
+
+<details>
+<summary><b>Springer</b> — A4, two-column · panel labels: bold (a), (b)</summary>
+
+![Springer page layout, drawn to scale](figures/layout_springer.png)
+
+</details>
+
+<details>
+<summary><b>IEEE</b> — US Letter, two-column · panel labels: (a) below each panel</summary>
+
+![IEEE page layout, drawn to scale](figures/layout_ieee.png)
+
+</details>
+
+<details>
+<summary><b>Wiley</b> — US Letter, single-column · panel labels: (A), (B)</summary>
+
+![Wiley single-column page layout, drawn to scale](figures/layout_wiley.png)
+
+</details>
+
+<details>
+<summary><b>Science (AAAS)</b> — US Letter, three-column · panel labels: bold A, B</summary>
+
+![Science (AAAS) page layout, drawn to scale](figures/layout_science.png)
+
+</details>
+
+### Publisher figure specifications
+
+<details>
+<summary><b>Consensus widths · resolution · fonts · panel labels — with matplotlib helpers</b></summary>
+
+Publishers differ slightly on widths, resolution, fonts and formats. The **consensus below clears
+almost every journal**; the full per-publisher numbers are tabulated at the end — see
+[Publisher specifications](#publisher-specifications). Figures marked **✔** were verified in 2026
+against the official artwork pages (Nature, Elsevier, IEEE); the rest are representative and drift by
+journal, so **always check your target journal's guidelines before final export.** The
+[layouts above](#page-layouts-by-publisher) show these specs drawn to scale.
+
+- **Widths** — single columns cluster at **83–90 mm**, full width at **170–190 mm**; draw single at
+  ~88–90 mm and full at ~180–190 mm and they fit nearly everywhere (Science's 55 mm single is the outlier).
+- **Resolution, formats & color** — DPI is for **raster** content at final size (vector is
+  resolution-free): photos **300 dpi**, line art **600–1200 dpi**, combination **500–600 dpi**;
+  **EPS/PDF** vector accepted everywhere; submit **RGB** unless a journal asks for CMYK.
+- **Fonts** — **sans-serif (Arial / Helvetica)**, roughly **5–8 pt** in print (IEEE larger at
+  9–10 pt); keep text **editable, embedded — never Type 3** (see
+  [Editable, vector text](#editable-vector-text)).
+
+**One export that satisfies (almost) everyone.** You rarely need a different file per publisher —
+these defaults clear almost every journal (full grid in [Publisher specifications](#publisher-specifications)):
+
+- **Width** — single column **88–90 mm**, full width **180–190 mm**.
+- **Font** — sans-serif, **≥ 7 pt** (meets Nature's floor, stays legible like IEEE).
+- **Vector PDF** with **Type 42 / TrueType** embedded fonts (see [Editable, vector text](#editable-vector-text)).
+- **Raster only where needed** — **≥ 600 dpi** line art, **≥ 300 dpi** photos.
+- **RGB** color; convert to CMYK only if a print journal demands it.
+
+The bundled [`convention.mplstyle`](convention.mplstyle) already encodes these. Size per publisher
+with one small helper:
+
+```python
+WIDTHS_MM = {            # (single, full-width) in mm — see Publisher specifications
+    "nature": (88, 180), "elsevier": (90, 190), "ieee": (88.9, 182),
+    "springer": (84, 174), "wiley": (80, 176), "science": (55, 183),
+    "acs": (85, 178), "aps": (86, 178), "rsc": (83, 171),
+    "optica": (83, 165), "plos": (67, 190),
+}
+
+def fig_size(publisher="nature", full=False, aspect=0.72):
+    """(width, height) in inches for a publisher's column width."""
+    w_in = WIDTHS_MM[publisher][1 if full else 0] / 25.4
+    return (w_in, w_in * aspect)
+
+import matplotlib.pyplot as plt
+plt.style.use("convention.mplstyle")
+fig, ax = plt.subplots(figsize=fig_size("elsevier", full=True))   # 190 mm wide
+```
+
+**Panel labels by publisher.** Multi-panel figures get a letter per panel, but house style differs
+on **case** (`a` vs `A`), **weight** (bold vs regular), **brackets** (`a`, `(a)`, `a)`) and
+**position** (top-left corner vs centered *below* the panel) — the styles drawn above and tabulated
+in [Publisher specifications](#publisher-specifications). A small helper stamps a correctly-styled
+label onto any axes (`i` is 0-based: `0 → a/A`):
+
+```python
+import matplotlib.pyplot as plt
+
+PANEL_STYLE = {   # (case, brackets, bold, position) — representative house styles
+    "nature":   ("lower", "none",  True,  "tl"),     #  a    bold, no brackets
+    "elsevier": ("lower", "round", False, "tl"),     # (a)
+    "springer": ("lower", "round", True,  "tl"),     # (a)  bold
+    "ieee":     ("lower", "round", False, "below"),  # (a)  centered under the panel
+    "wiley":    ("upper", "round", False, "tl"),     # (A)
+    "science":  ("upper", "none",  True,  "tl"),     #  A    bold, no brackets
+}
+
+def panel_label(ax, i, journal="nature", size=8):
+    """Add a sub-panel label in `journal`'s house style. i is 0-based (0 -> a/A)."""
+    case, brackets, bold, pos = PANEL_STYLE[journal]
+    ch  = chr((65 if case == "upper" else 97) + i)              # A.. or a..
+    txt = {"round": f"({ch})", "square": f"[{ch}]", "none": ch}[brackets]
+    kw  = dict(fontsize=size, fontweight=("bold" if bold else "normal"))
+    if pos == "below":                       # IEEE: centered just under the axes
+        ax.text(0.5, -0.16, txt, transform=ax.transAxes, ha="center", va="top", **kw)
+    else:                                    # top-left, just inside the corner
+        ax.text(0.02, 0.98, txt, transform=ax.transAxes, ha="left", va="top", **kw)
+```
+
+> Conventions vary **between journals of the same publisher** and drift over time — treat this as a
+> starting point. A corner label (`0.02, 0.98`) can sit on data; placing it just *outside* the axes
+> (`-0.08, 1.04` with `layout="constrained"`) avoids overlap. Submit the figure **caption** as
+> manuscript text, not inside the artwork — only the **panel letters** belong in the figure file.
+
+**One publisher, end to end.** Width + the house font & vector export (`convention.mplstyle`) +
+panel labels — one short block makes a compliant figure; swapping `journal` does the rest:
+
+```python
+import matplotlib.pyplot as plt
+plt.style.use("convention.mplstyle")     # DejaVu · 6 pt · Type-42 vector export · high-vis colors
+
+journal = "ieee"                          # swap to "nature", "elsevier", …
+fig, axes = plt.subplots(1, 2, layout="constrained",
+                         figsize=fig_size(journal, full=True, aspect=0.42))   # 182 mm wide
+for i, ax in enumerate(axes.flat):
+    ax.plot(...)                          # your data
+    ax.set_xlabel("Time (s)")             # quantity + unit
+    ax.set_ylabel("Signal (a.u.)")
+    panel_label(ax, i, journal)           # IEEE → (a), (b) centered below each panel
+
+fig.savefig("figure.pdf")                 # vector + embedded editable fonts → submit this
+```
+
+</details>
+
+### Publisher specifications
+
+<details>
+<summary><b>Full per-publisher tables (transposed) · official artwork pages</b></summary>
 
 The full per-publisher grid, transposed so publishers run across the columns — these tables are
 **wide; scroll sideways** if your viewport clips them. **✔** = verified in 2026 against the official
@@ -589,6 +595,8 @@ journal's guidelines before final export.** Drawn to scale by
 [ACS](https://pubs.acs.org/page/4authors/submission/graphics_prep.html) ·
 Wiley, Science/AAAS, RSC, Taylor & Francis, APS, PLOS, Optica — *Author Services / Instructions for
 authors → artwork* on each publisher's site.
+
+</details>
 
 ---
 
