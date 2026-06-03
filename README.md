@@ -5,6 +5,8 @@ panel labels — and the **matplotlib commands** that meet those requirements, w
 schematics of how each publisher expects a figure to look. A style sheet is bundled for
 convenience, but the requirements and the commands are the point — not the style file.
 
+![Anatomy of a journal page, drawn to scale: how single- and double-column figures drop into a two-column research-article grid, with the reader's eye path, column widths (single 88 mm · double 180 mm), and the final-artwork specs (widths, DPI, fonts, formats, color).](figures/journal_layout_schematic.png)
+
 > **The one rule that explains all the others:** *build the figure at the exact physical size it
 > will be printed or projected.* Never draw it big and shrink it in Word/LaTeX/PowerPoint —
 > scaling silently pushes fonts and line weights below the legibility limits and makes panels
@@ -121,11 +123,9 @@ you set in inches, not points).
 Six publishers drawn **to scale** — paper size and margins, a full-width multi-panel figure and a
 part-/single-column figure at each journal's true widths and a distinct aspect ratio, with panel
 labels and captions in each house style and greeked body text. A **blue** tag marks the full-width
-figure, an **orange** tag the single-/part-width one; the dashed box is the text area.
+figure, an **orange** tag the single-/part-width one; the dashed box is the text area. GitHub
+has no native tabs, so each layout is a **collapsible section — click a publisher to expand.**
 
-**Jump to:** [Nature](#layout-nature) · [Elsevier](#layout-elsevier) · [Springer](#layout-springer) · [IEEE](#layout-ieee) · [Wiley](#layout-wiley) · [Science](#layout-science) — GitHub can't truly tab-switch, so each opens as a **click-to-expand** section below.
-
-<a id="layout-nature"></a>
 <details open>
 <summary><b>Nature</b> — A4, two-column · panel labels: bold lowercase a, b, c</summary>
 
@@ -133,7 +133,6 @@ figure, an **orange** tag the single-/part-width one; the dashed box is the text
 
 </details>
 
-<a id="layout-elsevier"></a>
 <details>
 <summary><b>Elsevier</b> — A4, two-column · panel labels: (a), (b)</summary>
 
@@ -141,7 +140,6 @@ figure, an **orange** tag the single-/part-width one; the dashed box is the text
 
 </details>
 
-<a id="layout-springer"></a>
 <details>
 <summary><b>Springer</b> — A4, two-column · panel labels: bold (a), (b)</summary>
 
@@ -149,7 +147,6 @@ figure, an **orange** tag the single-/part-width one; the dashed box is the text
 
 </details>
 
-<a id="layout-ieee"></a>
 <details>
 <summary><b>IEEE</b> — US Letter, two-column · panel labels: (a) below each panel</summary>
 
@@ -157,7 +154,6 @@ figure, an **orange** tag the single-/part-width one; the dashed box is the text
 
 </details>
 
-<a id="layout-wiley"></a>
 <details>
 <summary><b>Wiley</b> — US Letter, single-column · panel labels: (A), (B)</summary>
 
@@ -165,7 +161,6 @@ figure, an **orange** tag the single-/part-width one; the dashed box is the text
 
 </details>
 
-<a id="layout-science"></a>
 <details>
 <summary><b>Science (AAAS)</b> — US Letter, three-column · panel labels: bold A, B</summary>
 
