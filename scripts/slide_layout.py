@@ -15,11 +15,16 @@ instead of a journal page. It shows a 16:9 slide with:
 
 Output: slide_layout.png / .pdf
 """
+from pathlib import Path
+
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.lines import Line2D
+
+OUT = Path(__file__).resolve().parent.parent / "figures"
+OUT.mkdir(exist_ok=True)
 
 # data colour cycle: SciencePlots "high-vis" (github.com/garrettj403/SciencePlots)
 HIGHVIS = ["#0d49fb", "#e6091c", "#26eb47", "#8936df", "#fec32d", "#25d7fd"]
@@ -129,8 +134,8 @@ def render():
             "one idea, fonts ~18–40 pt, lines 1.5–3 pt, strong contrast.",
             ha="center", va="top", fontsize=6.2, color=SUB)
 
-    fig.savefig("slide_layout.pdf", bbox_inches="tight", pad_inches=0.05)
-    fig.savefig("slide_layout.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
+    fig.savefig(OUT / "slide_layout.pdf", bbox_inches="tight", pad_inches=0.05)
+    fig.savefig(OUT / "slide_layout.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
     print("wrote slide_layout.png and .pdf")
 

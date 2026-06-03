@@ -15,10 +15,15 @@ final artwork*:
 Output: journal_layout_schematic.pdf (vector) and .png (preview).
 """
 
+from pathlib import Path
+
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, FancyBboxPatch, Circle
+
+OUT = Path(__file__).resolve().parent.parent / "figures"
+OUT.mkdir(exist_ok=True)
 
 # ---------------------------------------------------------------- style ----
 mpl.rcParams.update({
@@ -284,7 +289,7 @@ line("drop-shadow & 3-D effects", color=WARN, size=6.8)
 ax.text(-10, -7, "Grid and dimensions per Nature branded research journals’ "
         "guide to preparing final artwork.", fontsize=7, color=SUB, va="center")
 
-fig.savefig("journal_layout_schematic.pdf", bbox_inches="tight", pad_inches=0.15)
-fig.savefig("journal_layout_schematic.png", dpi=200, bbox_inches="tight",
+fig.savefig(OUT / "journal_layout_schematic.pdf", bbox_inches="tight", pad_inches=0.15)
+fig.savefig(OUT / "journal_layout_schematic.png", dpi=200, bbox_inches="tight",
             pad_inches=0.15)
 print("wrote journal_layout_schematic.pdf and .png")

@@ -1,0 +1,84 @@
+# convention.mplstyle — single-column, publication-ready matplotlib defaults
+# Usage:  import matplotlib.pyplot as plt; plt.style.use("convention.mplstyle")
+# See README.md for the rationale behind each value.
+
+# ---- Figure & export size ---------------------------------------------------
+figure.figsize:        3.4645, 3.4645   # inches: ~Nature single column (max 3.5 in);
+                                   # for double column use ~7.0, 5.25
+figure.dpi:            200          # ON-SCREEN preview only (default 100);
+                                   # does NOT affect savefig (see savefig.dpi)
+figure.constrained_layout.use: True  # auto-space panels to fit inside figsize (no
+                                   # clipping, no resize). Don't call tight_layout()/
+                                   # subplots_adjust() — they fight the solver.
+
+# ---- Fonts (journal ~5-7 pt at final size) ----------------------------------
+# DejaVu Sans is matplotlib's only bundled sans-serif, so it is listed first and
+# always wins — identical output on any machine / CI. To get the Arial look on a
+# machine that has it, move Arial (or the open, metric-compatible Liberation
+# Sans / Arimo) to the front of the list, and set mathtext.fontset to 'stixsans'.
+font.family:           sans-serif
+font.sans-serif:       DejaVu Sans, Arial, Liberation Sans
+font.size:             6           # base size; other elements scale from this
+axes.titlesize:        7
+axes.labelsize:        6
+xtick.labelsize:       5
+ytick.labelsize:       5
+legend.fontsize:       5
+legend.title_fontsize: 6
+
+# ---- Math text --------------------------------------------------------------
+mathtext.fontset:      dejavusans   # match the DejaVu sans text; no Arial dependency
+text.usetex:           False        # set True for LaTeX-identical math (needs LaTeX)
+
+# ---- Colour cycle (high-vis: bright colours + cycling line styles) ----------
+# Bright and easy to tell apart — good for slides/projection — but NOT colour-
+# blind-safe. For accessible figures swap in the Wong/Okabe-Ito palette (see the
+# guide's Colour section).
+axes.prop_cycle:       cycler('color', ['0d49fb', 'e6091c', '26eb47', '8936df', 'fec32d', '25d7fd']) + cycler('ls', ['-', '--', '-.', ':', '-', '--'])
+
+# ---- Lines & markers (weights for final print size) -------------------------
+lines.linewidth:       1.0
+lines.markersize:      3.0
+axes.linewidth:        0.5
+
+# ---- Ticks (boxed look: inward, all four sides, minor ticks) ----------------
+xtick.direction:       in
+ytick.direction:       in
+xtick.top:             True
+ytick.right:           True
+xtick.major.size:      3
+ytick.major.size:      3
+xtick.major.width:     0.5         # match axes.linewidth
+ytick.major.width:     0.5
+xtick.minor.size:      1.5
+ytick.minor.size:      1.5
+# xtick.minor.width:     0.5
+# ytick.minor.width:     0.5
+xtick.minor.visible:   True
+ytick.minor.visible:   True
+
+# ---- Grid (off by default; styled for when you switch it on) ----------------
+axes.grid:             False
+axes.axisbelow:        True
+grid.linestyle:        --
+grid.color:            k
+grid.alpha:            0.5
+grid.linewidth:        0.5
+
+# ---- Legend (frameless, label coloured like its line) -----------------------
+legend.frameon:        False       # no box
+legend.labelcolor:     linecolor   # colour each label like its line/marker
+legend.framealpha:     1.0         # only applies if you re-enable frameon per-plot
+legend.fancybox:       True        # only applies if you re-enable frameon per-plot
+legend.numpoints:      1
+
+# ---- Editable, vector-safe text + exact figure size -------------------------
+pdf.fonttype:          42          # TrueType (editable), NOT Type 3
+ps.fonttype:           42
+svg.fonttype:          none        # keep SVG text as text
+savefig.dpi:           600         # raster export at final size
+savefig.bbox:          standard    # exact figsize; NOT 'tight' (tight silently
+                                   # changes the saved size)
+savefig.pad_inches:    0.05        # only used if you switch savefig.bbox to 'tight'
+savefig.transparent:   False
+savefig.facecolor:     white       # force a white export background

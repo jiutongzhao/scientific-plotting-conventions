@@ -2,8 +2,8 @@
 publisher_page_layouts.py
 =========================
 Renders ONE to-scale page-layout figure per publisher (so each is large and
-legible), plus a standalone three-typeface specimen. Each per-publisher figure
-shows that journal's page at true column widths, with:
+legible). Each per-publisher figure shows that journal's page at true column
+widths, with:
 
   * paper size & margins (left-margin dimension, left-aligned);
   * a full-width MULTI-PANEL figure (a-d) with panel labels in the journal's
@@ -17,16 +17,19 @@ shows that journal's page at true column widths, with:
 Type is rendered to scale, so title > heading > body > caption > axis-label
 sizes are faithful. A geometric self-check flags any overlap.
 
-Outputs (per publisher):  layout_<slug>.png / .pdf
-Output (specimen):        typeface_specimen.png / .pdf
+Outputs (per publisher):  ../figures/layout_<slug>.png / .pdf
 """
+from pathlib import Path
+
 import textwrap
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.lines import Line2D
-from matplotlib.font_manager import FontProperties, findfont
+
+OUT = Path(__file__).resolve().parent.parent / "figures"
+OUT.mkdir(exist_ok=True)
 
 # data colour cycle: SciencePlots "high-vis" style (github.com/garrettj403/SciencePlots)
 HIGHVIS = ["#0d49fb", "#e6091c", "#26eb47", "#8936df", "#fec32d", "#25d7fd"]
@@ -47,15 +50,6 @@ T_BLUE, T_ORNG = "#0a4f7a", "#8a6000"
 PAPER_EC, TEXT_EC = "#c9cfd6", "#cdd5dd"
 BODY_C, GREEK_C, CAP_C = "#565c64", "#c3c9d0", "#3b424b"
 rng = np.random.default_rng(4)
-
-FP_TIMES = FontProperties(fname=findfont("Times New Roman"))
-FP_TIMES_I = FontProperties(family="Times New Roman", style="italic")
-FP_TIMES_B = FontProperties(family="Times New Roman", weight="bold")
-FP_ARIAL = FontProperties(fname=findfont("Arial"))
-FP_ARIAL_I = FontProperties(family="Arial", style="italic")
-FP_ARIAL_B = FontProperties(family="Arial", weight="bold")
-FP_CM = FontProperties(fname=findfont("cmr10"))
-FP_CMB = FontProperties(fname=findfont("cmb10"))
 
 LG = dict(frameon=True, framealpha=0.78, facecolor="white", edgecolor="none",
           borderpad=0.2, handletextpad=0.3, handlelength=1.0)
@@ -446,49 +440,10 @@ def render_publisher(i):
     render_captions(fig.canvas.get_renderer())
     probs = audit(name)
     slug = name.split()[0].lower()
-    fig.savefig(f"layout_{slug}.pdf", bbox_inches="tight", pad_inches=0.05)
-    fig.savefig(f"layout_{slug}.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
+    fig.savefig(OUT / f"layout_{slug}.pdf", bbox_inches="tight", pad_inches=0.05)
+    fig.savefig(OUT / f"layout_{slug}.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
     return probs
-
-
-def render_specimen():
-    global ax, fig
-    cw, ch = 200, 72
-    fig, ax = plt.subplots(figsize=(cw * 0.032, ch * 0.032))
-    ax.set_xlim(0, cw); ax.set_ylim(0, ch); ax.set_aspect("equal"); ax.axis("off")
-    ax.text(0, ch, "Three typefaces — same text & formula", fontsize=6.5,
-            fontweight="bold", color=INK, va="top", ha="left")
-    speccols = [("Arial", FP_ARIAL, FP_ARIAL_I, FP_ARIAL_B, "stixsans"),
-                ("Times New Roman", FP_TIMES, FP_TIMES_I, FP_TIMES_B, "stix"),
-                ("Computer Modern", FP_CM, None, FP_CMB, "cm")]
-    rows = [("Large · 12 pt", 7.4, "reg"), ("Regular · 9 pt", 5.6, "reg"),
-            ("Small · 7 pt", 4.3, "reg"), ("italic", 5.6, "ital"),
-            ("bold", 5.6, "bold"), ("math", 6.3, "math")]
-    TXT, FORMULA = "Sample 0123", r"$E=mc^2$"
-    yhdr = ch - 13
-    for cj, (nm, reg, ital, bold, mset) in enumerate(speccols):
-        cx = 34 + cj * 56
-        ax.text(cx, yhdr, nm, fontproperties=bold, fontsize=6.0, color=ACCENT, va="center", ha="left")
-        for ri, (lab, fs, kind) in enumerate(rows):
-            ry = yhdr - 11 - ri * 8.0
-            if cj == 0:
-                ax.text(0, ry, lab, fontsize=4.5, color=SUB, va="center", ha="left", style="italic")
-            if kind == "reg":
-                ax.text(cx, ry, TXT, fontproperties=reg, fontsize=fs, color=INK, va="center", ha="left")
-            elif kind == "bold":
-                ax.text(cx, ry, TXT, fontproperties=bold, fontsize=fs, color=INK, va="center", ha="left")
-            elif kind == "ital":
-                if ital is not None:
-                    ax.text(cx, ry, TXT, fontproperties=ital, fontsize=fs, color=INK, va="center", ha="left")
-                else:
-                    ax.text(cx, ry, r"$Sample\ 0123$", math_fontfamily="cm", fontsize=fs,
-                            color=INK, va="center", ha="left")
-            else:
-                ax.text(cx, ry, FORMULA, math_fontfamily=mset, fontsize=fs, color=INK, va="center", ha="left")
-    fig.savefig("typeface_specimen.pdf", bbox_inches="tight", pad_inches=0.05)
-    fig.savefig("typeface_specimen.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
-    plt.close(fig)
 
 
 if __name__ == "__main__":
@@ -497,7 +452,5 @@ if __name__ == "__main__":
     for i in range(len(pubs)):
         if render_publisher(i):
             all_ok = False
-    render_specimen()
-    print("typeface_specimen     OK ✓")
     print("ALL CLEAN ✓" if all_ok else "SOME ISSUES — see above ✗")
-    print("wrote layout_<publisher>.{png,pdf} (×6) and typeface_specimen.{png,pdf}")
+    print("wrote layout_<publisher>.{png,pdf} (×6)")

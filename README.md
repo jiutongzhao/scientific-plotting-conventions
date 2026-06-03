@@ -59,7 +59,7 @@ fig, ax = plt.subplots(figsize=fig_size(183))   # double column
 > ```python
 > plt.rcParams["savefig.bbox"] = "standard"   # matplotlib's default; undo any package that forced 'tight'
 > ```
-> (The bundled [`scientific.mplstyle`](scientific.mplstyle) ships `savefig.bbox: standard` for this reason.)
+> (The bundled [`convention.mplstyle`](convention.mplstyle) ships `savefig.bbox: standard` for this reason.)
 
 ### Fonts & font size
 
@@ -96,13 +96,15 @@ mpl.rcParams.update({
 })
 ```
 
-The map below colors every text element by the rcParam that sets its size (**top** — x- and
-y-axis labels share a color because both are `axes.labelsize`), previews line-width, line-style
-and marker-size options (**bottom** — see [Line weight & marker size](#line-weight--marker-size)),
-and is dimensioned with its own **`figsize`** (width × height in inches — the one size you set in
-inches, not points).
+The map below has three bands: **top** colors every text element by the rcParam that sets its size
+(x- and y-axis labels share a color because both are `axes.labelsize`); **middle** previews
+line-width, line-style and marker-size options (see [Line weight & marker size](#line-weight--marker-size));
+**bottom** shows the same text and formula in three typefaces — **Arial** (sans-serif), **Times New
+Roman** (serif) and **Computer Modern** (the LaTeX face) — at a few sizes plus italic, bold and math.
+The whole figure is dimensioned with its own **`figsize`** (width × height in inches — the one size
+you set in inches, not points).
 
-![Top: each text element of a matplotlib figure colored by the rcParam that sets its size, with a color-matched key of the parameter names. Bottom: line widths (0.5–3 pt), line styles (solid/dashed/dotted/dash-dot) and marker sizes (3–12). The whole figure is dimensioned with its figsize (width × height in inches).](rcparams_text_map.png)
+![Top: each text element of a matplotlib figure colored by the rcParam that sets its size, with a color-matched key of the parameter names. Middle: line widths (0.5–3 pt), line styles (solid/dashed/dotted/dash-dot) and marker sizes (3–12). Bottom: a three-typeface specimen — Arial, Times New Roman and Computer Modern, each at several sizes plus italic, bold and a math formula. The whole figure is dimensioned with its figsize (width × height in inches).](figures/rcparams_text_map.png)
 
 > `findfont: Font family 'Arial' not found`? Arial isn't installed (common on Linux/WSL) — install
 > it (e.g. `msttcorefonts`), `addfont()` a `.ttf`, or rely on the **DejaVu Sans** fallback. For
@@ -125,49 +127,42 @@ doesn't render tabs, so each layout is a **collapsible section — click to expa
 <details open>
 <summary><b>Nature</b> — A4, two-column · panel labels: bold lowercase a, b, c</summary>
 
-![Nature page layout, drawn to scale](layout_nature.png)
+![Nature page layout, drawn to scale](figures/layout_nature.png)
 
 </details>
 
 <details>
 <summary><b>Elsevier</b> — A4, two-column · panel labels: (a), (b)</summary>
 
-![Elsevier page layout, drawn to scale](layout_elsevier.png)
+![Elsevier page layout, drawn to scale](figures/layout_elsevier.png)
 
 </details>
 
 <details>
 <summary><b>Springer</b> — A4, two-column · panel labels: bold (a), (b)</summary>
 
-![Springer page layout, drawn to scale](layout_springer.png)
+![Springer page layout, drawn to scale](figures/layout_springer.png)
 
 </details>
 
 <details>
 <summary><b>IEEE</b> — US Letter, two-column · panel labels: (a) below each panel</summary>
 
-![IEEE page layout, drawn to scale](layout_ieee.png)
+![IEEE page layout, drawn to scale](figures/layout_ieee.png)
 
 </details>
 
 <details>
 <summary><b>Wiley</b> — US Letter, single-column · panel labels: (A), (B)</summary>
 
-![Wiley single-column page layout, drawn to scale](layout_wiley.png)
+![Wiley single-column page layout, drawn to scale](figures/layout_wiley.png)
 
 </details>
 
 <details>
 <summary><b>Science (AAAS)</b> — US Letter, three-column · panel labels: bold A, B</summary>
 
-![Science (AAAS) page layout, drawn to scale](layout_science.png)
-
-</details>
-
-<details>
-<summary><b>Typefaces</b> — the same text and formula in Arial, Times New Roman and Computer Modern</summary>
-
-![Typeface specimen across size, italic, bold and math rows](typeface_specimen.png)
+![Science (AAAS) page layout, drawn to scale](figures/layout_science.png)
 
 </details>
 
@@ -178,7 +173,7 @@ collect the major ones so you can size a figure once and trust it will drop in. 
 were verified in 2026 against the publisher's official artwork page (**Nature, Elsevier, IEEE**);
 unmarked rows are representative values that drift by journal — **always open your target journal's
 artwork guidelines before final export.** The [layouts above](#page-layouts-by-publisher) show
-these specs drawn to scale, via [`publisher_page_layouts.py`](publisher_page_layouts.py).
+these specs drawn to scale, via [`publisher_page_layouts.py`](scripts/publisher_page_layouts.py).
 
 **Figure widths & maximum height.**
 
@@ -247,7 +242,7 @@ these defaults clear every row above:
 - **Raster only where needed** — **≥ 600 dpi** line art, **≥ 300 dpi** photos.
 - **RGB** color; convert to CMYK only if a print journal demands it.
 
-The bundled [`scientific.mplstyle`](scientific.mplstyle) already encodes these. Size per publisher
+The bundled [`convention.mplstyle`](convention.mplstyle) already encodes these. Size per publisher
 with one small helper:
 
 ```python
@@ -264,7 +259,7 @@ def fig_size(publisher="nature", full=False, aspect=0.72):
     return (w_in, w_in * aspect)
 
 import matplotlib.pyplot as plt
-plt.style.use("scientific.mplstyle")
+plt.style.use("convention.mplstyle")
 fig, ax = plt.subplots(figsize=fig_size("elsevier", full=True))   # 190 mm wide
 ```
 
@@ -312,12 +307,12 @@ def panel_label(ax, i, journal="nature", size=8):
 > (`-0.08, 1.04` with `layout="constrained"`) avoids overlap. Submit the figure **caption** as
 > manuscript text, not inside the artwork — only the **panel letters** belong in the figure file.
 
-**One publisher, end to end.** Width + the house font & vector export (`scientific.mplstyle`) +
+**One publisher, end to end.** Width + the house font & vector export (`convention.mplstyle`) +
 panel labels — one short block makes a compliant figure; swapping `journal` does the rest:
 
 ```python
 import matplotlib.pyplot as plt
-plt.style.use("scientific.mplstyle")     # Arial · 7 pt · Type-42 vector export · Wong colors
+plt.style.use("convention.mplstyle")     # DejaVu · 6 pt · Type-42 vector export · high-vis colors
 
 journal = "ieee"                          # swap to "nature", "elsevier", …
 fig, axes = plt.subplots(1, 2, layout="constrained",
@@ -370,11 +365,13 @@ mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=wong)
 mpl.rcParams["image.cmap"] = "viridis"   # default for imshow/pcolormesh
 ```
 
-> **High-contrast alternative — SciencePlots `high-vis`.** The schematics here use the bright
+> **High-contrast alternative — SciencePlots `high-vis`.** The schematics here — and the bundled
+> [`convention.mplstyle`](convention.mplstyle) — default to the bright
 > [SciencePlots](https://github.com/garrettj403/SciencePlots) `high-vis` cycle —
 > `#0d49fb #e6091c #26eb47 #8936df #fec32d #25d7fd`. Punchy and easy to tell apart (good for
-> projection) but **not** colorblind-safe — prefer Wong for accessible figures. SciencePlots also
-> ships journal-matching styles (see [References](#references)).
+> projection) but **not** colorblind-safe — for accessible figures swap in Wong (drop the `wong`
+> list above into `axes.prop_cycle`). SciencePlots also ships journal-matching styles (see
+> [References](#references)).
 
 ### Line weight & marker size
 
@@ -422,7 +419,7 @@ for ax, letter in zip(axes.flat, "ab"):
 Slides invert several print rules — viewers are **far away** and see each slide for **seconds**.
 Drawn to scale, the same way the journal pages are above:
 
-![A 16:9 presentation slide drawn to scale (13.33 × 7.5 in): a big title, a few short bullets, and a sample figure that fills the content area with thick lines and large labels. Tags mark the slide-scale type sizes — title 28–40 pt, body and axis text 18–24 pt, data lines 1.5–3 pt — and dimension lines annotate the canvas.](slide_layout.png)
+![A 16:9 presentation slide drawn to scale (13.33 × 7.5 in): a big title, a few short bullets, and a sample figure that fills the content area with thick lines and large labels. Tags mark the slide-scale type sizes — title 28–40 pt, body and axis text 18–24 pt, data lines 1.5–3 pt — and dimension lines annotate the canvas.](figures/slide_layout.png)
 
 - **Size:** design at **16:9** (13.33 × 7.5 in) — or 4:3 (10 × 7.5 in) for older projectors. Make
   figures fill the content area; don't shrink a print figure onto a slide.
@@ -516,76 +513,31 @@ Three ways to apply settings, quick → reproducible: **inline** `mpl.rcParams.u
 top of a script; a reusable **`.mplstyle`** sheet (recommended — portable, version-controllable);
 or a **context manager** for a one-off — `with plt.style.context("paper.mplstyle"): ...`.
 
-Everything above is just rcParams. The companion [`scientific.mplstyle`](scientific.mplstyle)
+Everything above is just rcParams. The companion [`convention.mplstyle`](convention.mplstyle)
 bundles them so you don't repeat them per script — purely a convenience:
 
 ```python
 import matplotlib.pyplot as plt
-plt.style.use("scientific.mplstyle")      # local file
+plt.style.use("convention.mplstyle")      # local file
 # Install once for all projects by copying it to:
-#   matplotlib.get_configdir() + "/stylelib/scientific.mplstyle"   → plt.style.use("scientific")
+#   matplotlib.get_configdir() + "/stylelib/convention.mplstyle"   → plt.style.use("convention")
 ```
 
+The file is in the repo — open [`convention.mplstyle`](convention.mplstyle) for the full, commented
+set. Its load-bearing lines, the ones that encode the conventions above:
+
 ```ini
-# scientific.mplstyle — single-column, publication-ready defaults
-# ---- Figure & export ----
-figure.figsize:        3.5, 2.16          # inches: single column, ~golden ratio
-figure.dpi:            150                 # on-screen
-figure.constrained_layout.use: True
-savefig.dpi:           600                 # raster export at final size
-savefig.bbox:          standard            # exact figsize; NOT 'tight' (tight silently changes the output size)
-savefig.pad_inches:    0.02                # only applies if you switch savefig.bbox back to 'tight'
-savefig.transparent:   False
-
-# ---- Editable, vector-safe text ----
-pdf.fonttype:          42                  # TrueType (editable), NOT Type 3
-ps.fonttype:           42
-svg.fonttype:          none                # keep text as text in SVG
-
-# ---- Fonts ----
-font.family:           sans-serif
-font.sans-serif:       Arial, Helvetica, DejaVu Sans
-font.size:             7
-axes.titlesize:        8
-axes.labelsize:        7
-xtick.labelsize:       6
-ytick.labelsize:       6
-legend.fontsize:       6
-mathtext.fontset:      dejavusans
-
-# ---- Axes & spines ----
-axes.linewidth:        0.6
-axes.spines.top:       False
-axes.spines.right:     False
-axes.labelpad:         2.0
-axes.titlepad:         4.0
-axes.prop_cycle:       cycler('color', ['0072B2','E69F00','009E73','D55E00','56B4E9','CC79A7','F0E442','000000'])
-
-# ---- Lines & markers ----
-lines.linewidth:       1.0
-lines.markersize:      4
-lines.markeredgewidth: 0.6
-
-# ---- Ticks ----
-xtick.direction:       out
-ytick.direction:       out
-xtick.major.size:      3
-ytick.major.size:      3
-xtick.major.width:     0.6
-ytick.major.width:     0.6
-xtick.minor.visible:   True
-ytick.minor.visible:   True
-
-# ---- Legend & grid ----
-legend.frameon:        False
-legend.handlelength:   1.5
-legend.labelspacing:   0.3
-axes.grid:             False
-grid.linewidth:        0.4
-grid.alpha:            0.4
-
-# ---- Images ----
-image.cmap:            viridis
+figure.figsize:   3.4645, 3.4645           # single column (~Nature 3.5 in max), inches
+figure.constrained_layout.use: True        # non-overlapping margins at exact figsize
+savefig.bbox:     standard                  # NOT 'tight' — tight silently resizes the output
+pdf.fonttype:     42                         # TrueType, editable (NOT Type 3); ps.fonttype too
+svg.fonttype:     none                       # keep SVG text as text
+font.sans-serif:  DejaVu Sans, Arial, Liberation Sans   # bundled DejaVu first → reproducible
+font.size:        6                          # axes.titlesize 7 · labelsize 6 · ticks/legend 5
+xtick.direction:  in                         # boxed look: inward ticks on all four sides…
+xtick.top:        True                       # …ytick.right True, xtick/ytick.minor.visible True
+legend.frameon:   False                      # frameless; legend.labelcolor: linecolor
+axes.prop_cycle:  cycler('color', ['0d49fb','e6091c','26eb47','8936df','fec32d','25d7fd']) + cycler('ls', ['-','--','-.',':','-','--'])  # high-vis (NOT colorblind-safe — swap in Wong for that)
 ```
 
 Worked example, and the `savefig` arguments worth knowing:
@@ -593,7 +545,7 @@ Worked example, and the `savefig` arguments worth knowing:
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use("scientific.mplstyle")
+plt.style.use("convention.mplstyle")
 
 x = np.linspace(0, 2 * np.pi, 400)
 fig, ax = plt.subplots()                       # size/fonts come from the style
@@ -651,25 +603,28 @@ Per-publisher numbers are in [Publisher figure specifications](#publisher-figure
 ## About this repository
 
 A **reference**, not a library to import — the value is the guide above. The bundled
-[`scientific.mplstyle`](scientific.mplstyle) is an optional convenience that packages the guide's
+[`convention.mplstyle`](convention.mplstyle) is an optional convenience that packages the guide's
 rcParams; you never need it to follow the conventions.
 
-| File | What it is |
+| Path | What it is |
 |---|---|
 | **`README.md`** | The full guide — this document. |
-| **[`scientific.mplstyle`](scientific.mplstyle)** | Optional — bundles the guide's rcParams (Arial · 7 pt · Type-42 vector export · despined) into one `plt.style.use(...)` file. |
-| **[`publisher_page_layouts.py`](publisher_page_layouts.py)** | Generates the six per-publisher layouts (`layout_*.png/.pdf`) and the typeface specimen, drawn to scale. |
-| **[`slide_layout.py`](slide_layout.py)** | Generates the to-scale 16:9 presentation-slide schematic (`slide_layout.png/.pdf`). |
-| **[`rcparams_text_map.py`](rcparams_text_map.py)** | Generates the styling map — text-element → rcParam color map (top) + line/style/marker reference (bottom). |
-| **[`journal_layout_schematic.py`](journal_layout_schematic.py)** | Generates a single-page "figure anatomy" schematic. |
+| **[`convention.mplstyle`](convention.mplstyle)** | Optional — bundles the guide's rcParams (DejaVu · 6 pt · Type-42 vector export · boxed inward ticks · frameless line-colored legend · high-vis cycle) into one `plt.style.use(...)` file. |
+| **[`scripts/`](scripts)** | The figure generators (`*.py`). |
+| **[`figures/`](figures)** | Their rendered output (`*.png` / `*.pdf`), embedded above. |
+
+The scripts (each writes its `.png`/`.pdf` into `figures/`): **`publisher_page_layouts.py`** — the six
+per-publisher layouts; **`slide_layout.py`** — the 16:9 slide schematic; **`rcparams_text_map.py`** —
+the three-band styling map (rcParam→text · line/marker · typeface specimen); **`journal_layout_schematic.py`**
+— a single-page "figure anatomy" schematic.
 
 Reproduce (needs `numpy` + `matplotlib`; Arial improves the look, otherwise a bundled sans-serif is used):
 
 ```bash
-python publisher_page_layouts.py      # -> layout_<publisher>.{png,pdf} (x6) + typeface_specimen.{png,pdf}
-python slide_layout.py                # -> slide_layout.{png,pdf}
-python journal_layout_schematic.py    # -> journal_layout_schematic.{pdf,png}
-python rcparams_text_map.py           # -> rcparams_text_map.{pdf,png}
+python scripts/publisher_page_layouts.py      # -> figures/layout_<publisher>.{png,pdf} (x6)
+python scripts/slide_layout.py                # -> figures/slide_layout.{png,pdf}
+python scripts/journal_layout_schematic.py    # -> figures/journal_layout_schematic.{pdf,png}
+python scripts/rcparams_text_map.py           # -> figures/rcparams_text_map.{pdf,png}
 ```
 
 ---
