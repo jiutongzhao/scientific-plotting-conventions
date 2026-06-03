@@ -82,7 +82,7 @@ def greek(x0, x1, t0, t1, lh=3.0, lw=1.1, color=BODY):
         t += lh + (1.7 if end else 0.0)
         i += 1
 
-def caption(x0, x1, t0, num, n=4, lh=2.5):
+def caption(x0, x1, t0, num, n=4, lh=3.2):
     ax.text(x0, Yp(t0), f"Figure {num}", fontsize=6.6, fontweight="bold",
             color=INK, va="top", ha="left")
     ax.hlines(Yp(t0 + 0.4), x0 + 13.5, x1, lw=1.1, color="#aeb5bd",
@@ -98,9 +98,11 @@ def dim_h(x0, x1, y, label, ext=2.4, above=True):
     ax.annotate("", (x0, y), (x1, y), zorder=5,
                 arrowprops=dict(arrowstyle="<|-|>", color=ACCENT, lw=0.9,
                                 mutation_scale=8, shrinkA=0, shrinkB=0))
-    ax.text((x0 + x1) / 2, y + (2.6 if above else -2.6), label, color=ACCENT,
-            fontsize=7.2, ha="center", va=("bottom" if above else "top"),
-            fontweight="bold", zorder=6)
+    if label:
+        ax.text((x0 + x1) / 2, y + (2.6 if above else -2.6), label, color=ACCENT,
+                fontsize=7.2, ha="center", va=("bottom" if above else "top"),
+                fontweight="bold", zorder=6,
+                bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none"))
 
 def dim_v(x, y0, y1, label, ext=2.4):
     for yy in (y0, y1):
@@ -109,7 +111,8 @@ def dim_v(x, y0, y1, label, ext=2.4):
                 arrowprops=dict(arrowstyle="<|-|>", color=ACCENT, lw=0.9,
                                 mutation_scale=8, shrinkA=0, shrinkB=0))
     ax.text(x - 3.0, (y0 + y1) / 2, label, color=ACCENT, fontsize=6.8,
-            ha="center", va="center", rotation=90, fontweight="bold", zorder=6)
+            ha="center", va="center", rotation=90, fontweight="bold", zorder=6,
+            bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none"))
 
 def inset(x0, x1, t0, t1):
     a = ax.inset_axes([x0, Yp(t1), x1 - x0, t1 - t0], transform=ax.transData)
@@ -202,7 +205,8 @@ greek(*C2, 222, 258)
 #      label doesn't fall behind a figure panel) ----
 dim_h(C1[1], C2[0], Yp(128), "", ext=1.2)
 ax.text((C1[1] + C2[0]) / 2 + 4.5, Yp(128), "4 mm gutter", color=ACCENT,
-        fontsize=6.0, ha="left", va="center", fontweight="bold")
+        fontsize=6.0, ha="left", va="center", fontweight="bold",
+        bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none"))
 dim_h(0, W, Yp(269), "210 mm trim", above=False)
 
 # ---- numbered badges on the page (always top-right of their target) ----
