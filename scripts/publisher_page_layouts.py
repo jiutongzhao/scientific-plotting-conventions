@@ -25,7 +25,7 @@ import textwrap
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
+from matplotlib.patches import Rectangle, FancyBboxPatch
 from matplotlib.lines import Line2D
 
 OUT = Path(__file__).resolve().parent.parent / "figures"
@@ -37,6 +37,7 @@ mpl.rcParams.update({
     "pdf.fonttype": 42, "ps.fonttype": 42, "svg.fonttype": "none",
     "font.family": "sans-serif",
     "font.sans-serif": ["Arial", "Liberation Sans", "Helvetica", "DejaVu Sans"],
+    "mathtext.fontset": "stixsans",   # sans-serif maths to match the figure text
     "font.size": 3.0,
     "axes.labelsize": 2.7, "xtick.labelsize": 2.3, "ytick.labelsize": 2.3,
     "legend.fontsize": 2.6,
@@ -416,6 +417,29 @@ def audit(label):
     return probs
 
 
+def draw_typecard(PW):
+    """Footer key: how to set maths, symbols and variables in a figure.
+    The italic/roman/bold style convention is ISO 80000-2, followed by nearly
+    every journal; the examples are rendered in their actual style so the rule
+    is visible, not just stated."""
+    top, bot = -29.5, -47.5
+    ax.add_patch(FancyBboxPatch((0, bot), PW, top - bot,
+                 boxstyle="round,pad=0,rounding_size=2.5", facecolor="#f6f8fa",
+                 edgecolor=TEXT_EC, lw=0.8, zorder=2))
+    ax.text(3.0, top - 2.3, "Type for maths & symbols  ·  ISO 80000-2 (followed by most journals)",
+            fontsize=5.0, fontweight="bold", color=ACCENT, va="top", ha="left", zorder=4)
+    groups = [
+        (3.0,        r"italic — variables:   $x\;\;E\;\;T$"),
+        (PW * 0.34,  r"roman — units, functions, e, $\pi$:   $\mathrm{s}\;\;\mathrm{Hz}\;\;\sin$"),
+        (PW * 0.74,  r"bold — vectors, matrices:   $\boldsymbol{F}\;\;\mathbf{M}$"),
+    ]
+    for x, s in groups:
+        ax.text(x, -39.6, s, fontsize=4.7, color=INK, va="center", ha="left", zorder=4)
+    ax.text(3.0, -45.3, "Set maths in the figure's own typeface — only the style (italic / roman / "
+            "bold) carries meaning.", fontsize=4.0, color=SUB, style="italic",
+            va="center", ha="left", zorder=4)
+
+
 def render_publisher(i):
     global ax, fig
     name, paper, PW, PH, single, double, ncol, dfn, sfn, ok, heading = pubs[i]
@@ -423,13 +447,14 @@ def render_publisher(i):
         L.clear()
     CUR[0] = i; REAL[0] = False
     (adw, adh), (asw, ash) = ASPECT[name]
-    x0c, x1c, y0c, y1c = -6, PW + 8, -27, PH + 33
+    x0c, x1c, y0c, y1c = -6, PW + 8, -51, PH + 33
     FAC = 0.0215
     fig, ax = plt.subplots(figsize=((x1c - x0c) * FAC, (y1c - y0c) * FAC))
     ax.set_xlim(x0c, x1c); ax.set_ylim(y0c, y1c)
     ax.set_aspect("equal"); ax.axis("off")
 
     draw_page(i, 0, 0, name, paper, PW, PH, single, double, ncol, dfn, sfn, ok, heading)
+    draw_typecard(PW)
     S(i, 0, PH + 31, name, fontsize=12, fontweight="bold", color=INK, va="top", ha="left")
     S(i, 0, PH + 16.5, f"single {single:g} mm · full {double:g} mm · figures {adw}:{adh} & {asw}:{ash}",
       fontsize=5.0, color=SUB, va="top", ha="left")
