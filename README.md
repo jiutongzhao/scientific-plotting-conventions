@@ -619,18 +619,36 @@ rcParams; you never need it to follow the conventions.
 | **[`scripts/`](scripts)** | The figure generators (`*.py`). |
 | **[`figures/`](figures)** | Their rendered output (`*.png` / `*.pdf`), embedded above. |
 
+### The styles, rendered
+
+The **same plot** through each style sheet, shown at **true relative size** — the slide figure
+really is twice the width of the print one. Each is designed at the final size of its medium, so
+the type comes out right *there*: 6 pt on an 89 mm column, 18 pt on a projected slide.
+
+<img src="figures/style_sample_paper.png" width="333" alt="A damped sine, its quadrature and the envelope rendered with paper.mplstyle: a square 3.46-inch figure with 6 pt DejaVu type, 1 pt lines, boxed inward ticks with minors, and a frameless legend whose labels are colored like their lines.">
+
+[`paper.mplstyle`](paper.mplstyle) — 3.46 × 3.46 in (single column) · 6 pt type · 1 pt lines.
+
+<img src="figures/style_sample_slides.png" width="653" alt="The identical plot rendered with slides.mplstyle: a 6.8 × 4.2 inch 16:9-ish figure with 18 pt type and 2.5 pt lines — same colors, ticks and legend treatment as the paper style, scaled for projection.">
+
+[`slides.mplstyle`](slides.mplstyle) — 6.8 × 4.2 in · 18 pt type · 2.5 pt lines; the exported PNG
+pastes into PowerPoint at exactly this size.
+
+### Reproduce
+
 The scripts (each writes its `.png`/`.pdf` into `figures/`): **`publisher_page_layouts.py`** — the six
 per-publisher layouts; **`slide_layout.py`** — the 16:9 slide schematic; **`rcparams_text_map.py`** —
 the three-band styling map (rcParam→text · line/marker · typeface specimen); **`journal_layout_schematic.py`**
-— a single-page "figure anatomy" schematic.
+— a single-page "figure anatomy" schematic; **`style_samples.py`** — the two style-sample plots above.
 
-Reproduce (needs `numpy` + `matplotlib`; Arial improves the look, otherwise a bundled sans-serif is used):
+Needs `numpy` + `matplotlib`; Arial improves the look, otherwise a bundled sans-serif is used:
 
 ```bash
 python scripts/publisher_page_layouts.py      # -> figures/layout_<publisher>.{png,pdf} (x6)
 python scripts/slide_layout.py                # -> figures/slide_layout.{png,pdf}
 python scripts/journal_layout_schematic.py    # -> figures/journal_layout_schematic.{pdf,png}
 python scripts/rcparams_text_map.py           # -> figures/rcparams_text_map.{pdf,png}
+python scripts/style_samples.py               # -> figures/style_sample_{paper,slides}.{png,pdf}
 ```
 
 ---
