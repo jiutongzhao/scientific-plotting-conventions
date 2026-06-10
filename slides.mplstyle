@@ -1,0 +1,97 @@
+# slides.mplstyle — slide-ready matplotlib defaults (16:9 PowerPoint/Keynote)
+# Usage:  import matplotlib.pyplot as plt; plt.style.use("slides.mplstyle")
+#
+# Same visual identity as paper.mplstyle (fonts, high-vis cycle, boxed ticks,
+# frameless line-coloured legend), rescaled to slide size: the repo's slide rules
+# are body/axis text 18-24 pt and data lines 1.5-3 pt (see slide_layout.png).
+#
+# Paste into PowerPoint WITHOUT resizing — how it works:
+#   * The figure is designed at its final on-slide size (figure.figsize, inches).
+#   * savefig.bbox: standard keeps the saved file exactly figsize (never 'tight').
+#   * A saved PNG carries its dpi in the metadata; PowerPoint inserts images at
+#     pixels / dpi inches — i.e. at exactly figsize. Save, then drag the file in
+#     or copy the image file (not a screenshot) and paste.
+#   * Bitmaps copied straight off the screen (e.g. Ctrl+C in the plot window)
+#     carry no dpi, and PowerPoint assumes 96 dpi — figure.dpi is set to 96 so
+#     that path also lands at true size.
+
+# ---- Figure & export size ---------------------------------------------------
+figure.figsize:        6.8, 4.2     # inches: fills a 16:9 slide's content area
+                                   # next to a text column (slide is 13.33 x 7.5).
+                                   # Full-width hero: ~12.0, 5.3 · half slide: ~6.0, 4.5
+figure.dpi:            96           # on-screen preview at true size; also what
+                                   # PowerPoint assumes for pasted screen bitmaps
+figure.constrained_layout.use: True  # auto-space panels to fit inside figsize (no
+                                   # clipping, no resize). Don't call tight_layout()/
+                                   # subplots_adjust() — they fight the solver.
+
+# ---- Fonts (slide scale: 18-24 pt body, like PowerPoint text) ----------------
+# DejaVu Sans is matplotlib's only bundled sans-serif, so it is listed first and
+# always wins — identical output on any machine / CI. To get the Arial look on a
+# machine that has it, move Arial (or the open, metric-compatible Liberation
+# Sans / Arimo) to the front of the list, and set mathtext.fontset to 'stixsans'.
+font.family:           sans-serif
+font.sans-serif:       DejaVu Sans, Arial, Liberation Sans
+font.size:             18          # base size; reads like 18 pt slide text
+axes.titlesize:        22
+axes.labelsize:        20
+xtick.labelsize:       16
+ytick.labelsize:       16
+legend.fontsize:       18
+legend.title_fontsize: 18
+
+# ---- Math text --------------------------------------------------------------
+mathtext.fontset:      dejavusans   # match the DejaVu sans text; no Arial dependency
+text.usetex:           False        # set True for LaTeX-identical math (needs LaTeX)
+
+# ---- Colour cycle (high-vis: bright colours + cycling line styles) ----------
+# Bright and easy to tell apart — made for projection — but NOT colour-blind-
+# safe. For accessible figures swap in the Wong/Okabe-Ito palette (see the
+# guide's Colour section).
+axes.prop_cycle:       cycler('color', ['0d49fb', 'e6091c', '26eb47', '8936df', 'fec32d', '25d7fd']) + cycler('ls', ['-', '--', '-.', ':', '-', '--'])
+
+# ---- Lines & markers (slide weights: thick enough for the back row) ----------
+lines.linewidth:       2.5         # slide rule: 1.5-3 pt
+lines.markersize:      8.0
+axes.linewidth:        1.2
+
+# ---- Ticks (boxed look: inward, all four sides, minor ticks) ----------------
+xtick.direction:       in
+ytick.direction:       in
+xtick.top:             True
+ytick.right:           True
+xtick.major.size:      6
+ytick.major.size:      6
+xtick.major.width:     1.2         # match axes.linewidth
+ytick.major.width:     1.2
+xtick.minor.size:      3
+ytick.minor.size:      3
+xtick.minor.visible:   True
+ytick.minor.visible:   True
+
+# ---- Grid (off by default; styled for when you switch it on) ----------------
+axes.grid:             False
+axes.axisbelow:        True
+grid.linestyle:        --
+grid.color:            k
+grid.alpha:            0.5
+grid.linewidth:        1.0
+
+# ---- Legend (frameless, label coloured like its line) -----------------------
+legend.frameon:        False       # no box
+legend.labelcolor:     linecolor   # colour each label like its line/marker
+legend.framealpha:     1.0         # only applies if you re-enable frameon per-plot
+legend.fancybox:       True        # only applies if you re-enable frameon per-plot
+legend.numpoints:      1
+
+# ---- Export: exact figure size + crisp raster -------------------------------
+pdf.fonttype:          42          # TrueType (editable), NOT Type 3
+ps.fonttype:           42
+svg.fonttype:          none        # keep SVG text as text
+savefig.dpi:           300         # 6.8 in x 300 dpi = 2040 px — crisp on any
+                                   # projector without bloating the .pptx
+savefig.bbox:          standard    # exact figsize; NOT 'tight' (tight breaks the
+                                   # paste-at-true-size guarantee)
+savefig.pad_inches:    0.05        # only used if you switch savefig.bbox to 'tight'
+savefig.transparent:   False
+savefig.facecolor:     white       # force a white export background

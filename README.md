@@ -61,7 +61,7 @@ fig, ax = plt.subplots(figsize=fig_size(183))   # double column
 > ```python
 > plt.rcParams["savefig.bbox"] = "standard"   # matplotlib's default; undo any package that forced 'tight'
 > ```
-> (The bundled [`convention.mplstyle`](convention.mplstyle) ships `savefig.bbox: standard` for this reason.)
+> (The bundled [`paper.mplstyle`](paper.mplstyle) ships `savefig.bbox: standard` for this reason.)
 
 ### Fonts & font size
 
@@ -144,7 +144,7 @@ mpl.rcParams["image.cmap"] = "viridis"   # default for imshow/pcolormesh
 ```
 
 > **High-contrast alternative — SciencePlots `high-vis`.** The schematics here — and the bundled
-> [`convention.mplstyle`](convention.mplstyle) — default to the bright
+> [`paper.mplstyle`](paper.mplstyle) — default to the bright
 > [SciencePlots](https://github.com/garrettj403/SciencePlots) `high-vis` cycle —
 > `#0d49fb #e6091c #26eb47 #8936df #fec32d #25d7fd`. Punchy and easy to tell apart (good for
 > projection) but **not** colorblind-safe — for accessible figures swap in Wong (drop the `wong`
@@ -224,6 +224,11 @@ mpl.rcParams.update({
 # Quick toggle: plt.style.use("seaborn-v0_8-talk") bumps sizes for talks.
 ```
 
+> The bundled [`slides.mplstyle`](slides.mplstyle) packages these slide settings
+> (same look as `paper.mplstyle`, rescaled). It saves figures at their final on-slide size
+> (default 6.8 × 4.2 in, `savefig.bbox: standard`), so the exported PNG pastes into
+> PowerPoint at exactly that size — no resizing.
+
 ---
 
 ## Part 3 · Export the figure
@@ -291,17 +296,17 @@ Three ways to apply settings, quick → reproducible: **inline** `mpl.rcParams.u
 top of a script; a reusable **`.mplstyle`** sheet (recommended — portable, version-controllable);
 or a **context manager** for a one-off — `with plt.style.context("paper.mplstyle"): ...`.
 
-Everything above is just rcParams. The companion [`convention.mplstyle`](convention.mplstyle)
+Everything above is just rcParams. The companion [`paper.mplstyle`](paper.mplstyle)
 bundles them so you don't repeat them per script — purely a convenience:
 
 ```python
 import matplotlib.pyplot as plt
-plt.style.use("convention.mplstyle")      # local file
+plt.style.use("paper.mplstyle")      # local file
 # Install once for all projects by copying it to:
-#   matplotlib.get_configdir() + "/stylelib/convention.mplstyle"   → plt.style.use("convention")
+#   matplotlib.get_configdir() + "/stylelib/paper.mplstyle"   → plt.style.use("paper")
 ```
 
-The file is in the repo — open [`convention.mplstyle`](convention.mplstyle) for the full, commented
+The file is in the repo — open [`paper.mplstyle`](paper.mplstyle) for the full, commented
 set. Its load-bearing lines, the ones that encode the conventions above:
 
 ```ini
@@ -323,7 +328,7 @@ Worked example, and the `savefig` arguments worth knowing:
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use("convention.mplstyle")
+plt.style.use("paper.mplstyle")
 
 x = np.linspace(0, 2 * np.pi, 400)
 fig, ax = plt.subplots()                       # size/fonts come from the style
@@ -462,7 +467,7 @@ these defaults clear almost every journal (full grid in [Publisher specification
 - **Raster only where needed** — **≥ 600 dpi** line art, **≥ 300 dpi** photos.
 - **RGB** color; convert to CMYK only if a print journal demands it.
 
-The bundled [`convention.mplstyle`](convention.mplstyle) already encodes these. Size per publisher
+The bundled [`paper.mplstyle`](paper.mplstyle) already encodes these. Size per publisher
 with one small helper:
 
 ```python
@@ -479,7 +484,7 @@ def fig_size(publisher="nature", full=False, aspect=0.72):
     return (w_in, w_in * aspect)
 
 import matplotlib.pyplot as plt
-plt.style.use("convention.mplstyle")
+plt.style.use("paper.mplstyle")
 fig, ax = plt.subplots(figsize=fig_size("elsevier", full=True))   # 190 mm wide
 ```
 
@@ -518,12 +523,12 @@ def panel_label(ax, i, journal="nature", size=8):
 > (`-0.08, 1.04` with `layout="constrained"`) avoids overlap. Submit the figure **caption** as
 > manuscript text, not inside the artwork — only the **panel letters** belong in the figure file.
 
-**One publisher, end to end.** Width + the house font & vector export (`convention.mplstyle`) +
+**One publisher, end to end.** Width + the house font & vector export (`paper.mplstyle`) +
 panel labels — one short block makes a compliant figure; swapping `journal` does the rest:
 
 ```python
 import matplotlib.pyplot as plt
-plt.style.use("convention.mplstyle")     # DejaVu · 6 pt · Type-42 vector export · high-vis colors
+plt.style.use("paper.mplstyle")     # DejaVu · 6 pt · Type-42 vector export · high-vis colors
 
 journal = "ieee"                          # swap to "nature", "elsevier", …
 fig, axes = plt.subplots(1, 2, layout="constrained",
@@ -603,13 +608,14 @@ authors → artwork* on each publisher's site.
 ## About this repository
 
 A **reference**, not a library to import — the value is the guide above. The bundled
-[`convention.mplstyle`](convention.mplstyle) is an optional convenience that packages the guide's
+[`paper.mplstyle`](paper.mplstyle) is an optional convenience that packages the guide's
 rcParams; you never need it to follow the conventions.
 
 | Path | What it is |
 |---|---|
 | **`README.md`** | The full guide — this document. |
-| **[`convention.mplstyle`](convention.mplstyle)** | Optional — bundles the guide's rcParams (DejaVu · 6 pt · Type-42 vector export · boxed inward ticks · frameless line-colored legend · high-vis cycle) into one `plt.style.use(...)` file. |
+| **[`paper.mplstyle`](paper.mplstyle)** | Optional — bundles the guide's rcParams (DejaVu · 6 pt · Type-42 vector export · boxed inward ticks · frameless line-colored legend · high-vis cycle) into one `plt.style.use(...)` file. |
+| **[`slides.mplstyle`](slides.mplstyle)** | Optional — the same look at slide scale (18 pt body · 2.5 pt lines · 6.8 × 4.2 in): exported PNGs paste into PowerPoint at true size. |
 | **[`scripts/`](scripts)** | The figure generators (`*.py`). |
 | **[`figures/`](figures)** | Their rendered output (`*.png` / `*.pdf`), embedded above. |
 

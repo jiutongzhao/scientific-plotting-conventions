@@ -87,7 +87,7 @@ ax.set_ylim(-1.1, 1.8)   # top headroom so the frameless legend clears the curve
 ax.set_title("Axes title  ·  ax.set_title()", color=C["axes.titlesize"], fontweight="bold")
 ax.set_xlabel("x-axis label (unit)", color=C["axes.labelsize"])
 ax.set_ylabel("y-axis label (unit)", color=C["axes.labelsize"])
-# boxed look matching convention.mplstyle: inward ticks on all four sides + minor ticks
+# boxed look matching paper.mplstyle: inward ticks on all four sides + minor ticks
 ax.tick_params(axis="both", which="both", color="#888888", direction="in", top=True, right=True)
 ax.tick_params(axis="x", labelcolor=C["xtick.labelsize"])
 ax.tick_params(axis="y", labelcolor=C["ytick.labelsize"])
@@ -95,7 +95,7 @@ ax.minorticks_on()
 for s in ("top", "right", "left", "bottom"):
     ax.spines[s].set_color("#888888")
 
-# frameless legend (convention.mplstyle). NB: entries are coloured by rcParam role
+# frameless legend (paper.mplstyle). NB: entries are coloured by rcParam role
 # (legend.fontsize / legend.title_fontsize) for the map, not line-coloured.
 leg = ax.legend(title="Legend title", loc="upper right", frameon=False)
 for t in leg.get_texts():

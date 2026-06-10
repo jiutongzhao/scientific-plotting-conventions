@@ -1,5 +1,5 @@
-# convention.mplstyle — single-column, publication-ready matplotlib defaults
-# Usage:  import matplotlib.pyplot as plt; plt.style.use("convention.mplstyle")
+# paper.mplstyle — single-column, publication-ready matplotlib defaults
+# Usage:  import matplotlib.pyplot as plt; plt.style.use("paper.mplstyle")
 # See README.md for the rationale behind each value.
 
 # ---- Figure & export size ---------------------------------------------------
