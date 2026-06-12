@@ -100,11 +100,11 @@ def render():
             color=SUB, fontweight="bold", va="top", zorder=4)
 
     # ---- the figure fills the content area ----------------------------------
-    fx0, fy0, fw, fh = 5.95, 1.55, 6.8, 4.15   # right of bullets; raised so the
-    #                                            x-axis label stays inside the safe area
+    fx0, fy0, fw, fh = 5.95, 1.85, 6.8, 4.05   # right of bullets; raised so the
+    #                                            x-axis label clears the safe-area dashes
     sub = ax.inset_axes([fx0, fy0, fw, fh], transform=ax.transData)
     sub.set_zorder(3); slide_plot(sub)
-    ax.text(fx0, fy0 + fh + 0.5, "figure fills the content area · data lines 1.5–3 pt",
+    ax.text(fx0, fy0 + fh + 0.12, "figure fills the content area · data lines 1.5–3 pt",
             fontsize=6.6, color=T_ORNG, fontweight="bold", va="bottom", zorder=4)
 
     # ---- dimension lines (the canvas size) ----------------------------------
