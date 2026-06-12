@@ -1,0 +1,5 @@
+# Size patch — stack AFTER the base style (later entries override earlier ones):
+#   plt.style.use(["paper.mplstyle", "sizes/paper-double-1x2.mplstyle"])
+# Height rule: height = width x 0.618 (golden) x rows/cols — rows:cols = 1:2,
+# so this file serves BOTH 1x2 and 2x4 panel grids (golden panels either way).
+figure.figsize: 7.087, 2.19      # 180 mm double column, half-golden height

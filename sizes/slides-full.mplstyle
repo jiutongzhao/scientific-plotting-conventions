@@ -1,0 +1,3 @@
+# Size patch — stack AFTER the base style (later entries override earlier ones):
+#   plt.style.use(["slides.mplstyle", "sizes/slides-full.mplstyle"])
+figure.figsize: 12.0, 5.3        # full-width hero on a 16:9 slide (title bar left free)

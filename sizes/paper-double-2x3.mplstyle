@@ -1,0 +1,5 @@
+# Size patch — stack AFTER the base style (later entries override earlier ones):
+#   plt.style.use(["paper.mplstyle", "sizes/paper-double-2x3.mplstyle"])
+# Height rule: height = width x 0.618 (golden) x rows/cols — rows:cols = 2:3
+# for a 2x3 panel grid (each panel 2.36 x 1.46 in, golden).
+figure.figsize: 7.087, 2.92      # 180 mm double column, two-thirds-golden height

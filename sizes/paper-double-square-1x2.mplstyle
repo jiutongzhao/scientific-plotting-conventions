@@ -1,0 +1,6 @@
+# Size patch — stack AFTER the base style (later entries override earlier ones):
+#   plt.style.use(["paper.mplstyle", "sizes/paper-double-square-1x2.mplstyle"])
+# SQUARE panels: pair with ax.set_box_aspect(1) on each panel.
+# Height rule: height = width x panel_aspect x rows/cols, panel_aspect = 1,
+# rows:cols = 1:2 — serves BOTH 1x2 and 2x4 grids of square panels.
+figure.figsize: 7.087, 3.54      # 180 mm double column, half height

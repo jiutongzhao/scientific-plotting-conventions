@@ -1,0 +1,5 @@
+# Size patch — stack AFTER the base style (later entries override earlier ones):
+#   plt.style.use(["paper.mplstyle", "sizes/paper-double.mplstyle"])
+# Height rule: height = width x 0.618 (golden) x rows/cols — so every grid with
+# rows == cols shares THIS file: 1x1, 2x2, 3x3 panels.
+figure.figsize: 7.087, 4.38      # 180 mm double column x golden ratio (page allows up to ~240 mm tall)

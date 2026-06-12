@@ -306,6 +306,23 @@ plt.style.use("paper.mplstyle")      # local file
 #   matplotlib.get_configdir() + "/stylelib/paper.mplstyle"   → plt.style.use("paper")
 ```
 
+Styles **compose**: `plt.style.use` accepts a list, and later entries override earlier ones. The
+repo uses this for the one parameter that legitimately varies within a medium — the figure size.
+[`sizes/`](sizes) holds one-line patches that change only `figure.figsize`: column widths
+(`paper-single` · `paper-onehalf` · `paper-double`), panel-grid heights (`paper-double-1x2` ·
+`-2x3` · `-1x3`, plus `-square…` variants for square panels — four files per panel shape cover
+the seven common grids; see [the rendered samples](#the-styles-rendered)) and slide sizes
+(`slides-half` · `slides-full`):
+
+```python
+plt.style.use(["paper.mplstyle", "sizes/paper-double.mplstyle"])    # same style, 180 mm wide
+with plt.style.context(["slides.mplstyle", "sizes/slides-full.mplstyle"]):
+    fig, ax = plt.subplots()                                        # one full-width slide figure
+```
+
+For a single figure, `plt.subplots(figsize=fig_size(180))` does the same with no extra file —
+the patches pay off when a whole batch of figures shares one size.
+
 The file is in the repo — open [`paper.mplstyle`](paper.mplstyle) for the full, commented
 set. Its load-bearing lines, the ones that encode the conventions above:
 
@@ -616,6 +633,7 @@ rcParams; you never need it to follow the conventions.
 | **`README.md`** | The full guide — this document. |
 | **[`paper.mplstyle`](paper.mplstyle)** | Optional — bundles the guide's rcParams (DejaVu · 6 pt · Type-42 vector export · boxed inward ticks · frameless line-colored legend · high-vis cycle) into one `plt.style.use(...)` file. |
 | **[`slides.mplstyle`](slides.mplstyle)** | Optional — the same look at slide scale (18 pt body · 2.5 pt lines · 6.8 × 4.2 in): exported PNGs paste into PowerPoint at true size. |
+| **[`sizes/`](sizes)** | One-line `figure.figsize` patches that stack on a base style — `plt.style.use(["paper.mplstyle", "sizes/paper-double.mplstyle"])`. Column widths (single · onehalf · double), panel-grid heights in golden and square panel shapes (four files per shape serve the seven common grids), slide sizes (half · full). |
 | **[`scripts/`](scripts)** | The figure generators (`*.py`). |
 | **[`figures/`](figures)** | Their rendered output (`*.png` / `*.pdf`), embedded above. |
 
@@ -634,12 +652,88 @@ the type comes out right *there*: 6 pt on an 89 mm column, 18 pt on a projected 
 [`slides.mplstyle`](slides.mplstyle) — 6.8 × 4.2 in · 18 pt type · 2.5 pt lines; the exported PNG
 pastes into PowerPoint at exactly this size.
 
+**…and the [`sizes/`](sizes) patches**, stacked on their base style — the type stays 6 pt in
+every frame; only the canvas changes. For multi-panel figures the height follows one rule,
+
+> **height = width × panel aspect × rows / cols**
+
+so grids with the same rows : cols ratio share a figsize, and **four** double-column patches per
+panel shape cover the seven common grids. Two shapes are bundled: **golden** panels
+(aspect 0.618, the default) and **square** panels (aspect 1 — pair the `…-square…` patch with
+`ax.set_box_aspect(1)` on each panel, or the layout solver shrinks the panels instead):
+
+| Serves | Golden panels | Square panels |
+|---|---|---|
+| **1×1 · 2×2 · 3×3** | [`paper-double`](sizes/paper-double.mplstyle) · 7.09 × 4.38 | [`paper-double-square`](sizes/paper-double-square.mplstyle) · 7.09 × 7.09 |
+| **2×3** | [`paper-double-2x3`](sizes/paper-double-2x3.mplstyle) · 7.09 × 2.92 | [`paper-double-square-2x3`](sizes/paper-double-square-2x3.mplstyle) · 7.09 × 4.72 |
+| **1×2 · 2×4** | [`paper-double-1x2`](sizes/paper-double-1x2.mplstyle) · 7.09 × 2.19 | [`paper-double-square-1x2`](sizes/paper-double-square-1x2.mplstyle) · 7.09 × 3.54 |
+| **1×3** | [`paper-double-1x3`](sizes/paper-double-1x3.mplstyle) · 7.09 × 1.46 | [`paper-double-square-1x3`](sizes/paper-double-square-1x3.mplstyle) · 7.09 × 2.36 |
+
+> `ax.set_box_aspect(1)` makes the panel *box* square — that's what these patches budget for.
+> `ax.set_aspect(1)` (= `"equal"`) instead locks *data units* equal, so the box aspect becomes
+> the y-range / x-range of your data — pick the patch row matching that ratio.
+
+(For a narrower single panel, [`paper-single`](sizes/paper-single.mplstyle) (88 mm) and
+[`paper-onehalf`](sizes/paper-onehalf.mplstyle) (120 mm) patch the width instead.)
+
+All seven grids at true relative size:
+
+<img src="figures/size_sample_1x1.png" width="680" alt="A single full-width panel (7.09 × 4.38 in) under paper-double.">
+
+`plt.subplots(1, 1)` under `paper-double` — one full-width golden panel.
+
+<img src="figures/size_sample_2x2.png" width="680" alt="A 2×2 panel grid in the same 7.09 × 4.38 in figsize — four golden panels of 3.54 × 2.19 in, lettered a–d.">
+
+`plt.subplots(2, 2)` under the **same** `paper-double` — panels 3.54 × 2.19 in.
+
+<img src="figures/size_sample_3x3.png" width="680" alt="A 3×3 panel grid, again in 7.09 × 4.38 in — nine golden panels of 2.36 × 1.46 in, lettered a–i.">
+
+`plt.subplots(3, 3)` under the **same** `paper-double` again — panels 2.36 × 1.46 in.
+
+<img src="figures/size_sample_2x3.png" width="680" alt="A 2×3 panel grid at 7.09 × 2.92 in under paper-double-2x3 — six golden panels, lettered a–f.">
+
+`plt.subplots(2, 3)` under `paper-double-2x3` — panels 2.36 × 1.46 in.
+
+<img src="figures/size_sample_1x2.png" width="680" alt="A 1×2 panel pair at 7.09 × 2.19 in under paper-double-1x2.">
+
+`plt.subplots(1, 2)` under `paper-double-1x2` — panels 3.54 × 2.19 in.
+
+<img src="figures/size_sample_2x4.png" width="680" alt="A 2×4 panel grid in the same 7.09 × 2.19 in figsize — eight golden panels of 1.77 × 1.09 in, lettered a–h.">
+
+`plt.subplots(2, 4)` under the **same** `paper-double-1x2` — panels 1.77 × 1.09 in.
+
+<img src="figures/size_sample_1x3.png" width="680" alt="A 1×3 panel strip at 7.09 × 1.46 in under paper-double-1x3.">
+
+`plt.subplots(1, 3)` under `paper-double-1x3` — panels 2.36 × 1.46 in.
+
+And the **square-panel** variants — same grids, `ax.set_box_aspect(1)`, the `…-square…` patch
+budgeting the extra height (two examples; the other grids work the same way):
+
+<img src="figures/size_sample_square_2x2.png" width="680" alt="A 2×2 grid of square panels filling a 7.09 × 7.09 in figure under paper-double-square, each panel with box aspect 1.">
+
+`plt.subplots(2, 2)` + `set_box_aspect(1)` under `paper-double-square` — square panels, full-width canvas.
+
+<img src="figures/size_sample_square_2x3.png" width="680" alt="A 2×3 grid of square panels filling a 7.09 × 4.72 in figure under paper-double-square-2x3.">
+
+`plt.subplots(2, 3)` + `set_box_aspect(1)` under `paper-double-square-2x3` — six square panels, no wasted width.
+
+The slide sizes, at **½ scale** (a true-size 12-inch figure wouldn't fit on this page):
+
+<img src="figures/size_sample_slides-half.png" width="288" alt="The demo plot at half-slide size (6.0 × 4.5 in), 18 pt type — two of these sit side by side on one 16:9 slide.">
+
+[`slides-half`](sizes/slides-half.mplstyle) — 6.0 × 4.5 in, two side by side on one 16:9 slide.
+
+<img src="figures/size_sample_slides-full.png" width="576" alt="The same plot at full-slide-width hero size (12.0 × 5.3 in), 18 pt type, leaving room for the slide title.">
+
+[`slides-full`](sizes/slides-full.mplstyle) — 12.0 × 5.3 in, a full-width hero under the slide title.
+
 ### Reproduce
 
 The scripts (each writes its `.png`/`.pdf` into `figures/`): **`publisher_page_layouts.py`** — the six
 per-publisher layouts; **`slide_layout.py`** — the 16:9 slide schematic; **`rcparams_text_map.py`** —
 the three-band styling map (rcParam→text · line/marker · typeface specimen); **`journal_layout_schematic.py`**
-— a single-page "figure anatomy" schematic; **`style_samples.py`** — the two style-sample plots above.
+— a single-page "figure anatomy" schematic; **`style_samples.py`** — the two style-sample plots above;
+**`size_samples.py`** — the panel-grid (golden + square) and slide-size samples above.
 
 Needs `numpy` + `matplotlib`; Arial improves the look, otherwise a bundled sans-serif is used:
 
@@ -649,6 +743,7 @@ python scripts/slide_layout.py                # -> figures/slide_layout.{png,pdf
 python scripts/journal_layout_schematic.py    # -> figures/journal_layout_schematic.{pdf,png}
 python scripts/rcparams_text_map.py           # -> figures/rcparams_text_map.{pdf,png}
 python scripts/style_samples.py               # -> figures/style_sample_{paper,slides}.{png,pdf}
+python scripts/size_samples.py                # -> figures/size_sample_{<grid>,square_<grid>,slides-*}.{png,pdf} (x11)
 ```
 
 ---
