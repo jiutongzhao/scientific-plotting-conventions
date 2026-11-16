@@ -1,0 +1,4 @@
+# Size patch — stack AFTER the base style (later entries override earlier ones):
+#   plt.style.use(["paper.mplstyle", "sizes/single-tall.mplstyle"])
+# Near-square aspect — portrait data, vertically stacked panels, tall bar charts.
+figure.figsize: 3.4645, 3.4645   # 88 mm single column x 1.0 (tall)

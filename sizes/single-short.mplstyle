@@ -1,0 +1,4 @@
+# Size patch — stack AFTER the base style (later entries override earlier ones):
+#   plt.style.use(["paper.mplstyle", "sizes/single-short.mplstyle"])
+# Flat aspect — horizontal room for time series, spectra, shared-x stacks.
+figure.figsize: 3.4645, 1.732    # 88 mm single column x 0.50 (short)

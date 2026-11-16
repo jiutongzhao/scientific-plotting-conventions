@@ -1,0 +1,12 @@
+# short-legend.mplstyle — short, text-only legend
+# Removes the legend handles (the little line/marker samples) and colours each
+# label like its line, so the coloured text itself is the key — no frame, no eye
+# travel between handle and text. Goes one step beyond paper.mplstyle's legend,
+# which keeps the handles. Stack AFTER the base style:
+#   plt.style.use(["paper.mplstyle", "short-legend.mplstyle"])
+
+legend.frameon:        False
+legend.labelcolor:     linecolor   # colour each label like its line/marker
+legend.markerscale:    0           # drop the marker sample
+legend.handlelength:   0           # drop the line sample
+legend.handletextpad:  0           # close the gap the handle left behind

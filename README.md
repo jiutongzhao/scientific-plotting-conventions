@@ -309,15 +309,30 @@ plt.style.use("paper.mplstyle")      # local file
 Styles **compose**: `plt.style.use` accepts a list, and later entries override earlier ones. The
 repo uses this for the one parameter that legitimately varies within a medium — the figure size.
 [`sizes/`](sizes) holds one-line patches that change only `figure.figsize`: column widths
-(`paper-single` · `paper-onehalf` · `paper-double`), panel-grid heights (`paper-double-1x2` ·
-`-2x3` · `-1x3`, plus `-square…` variants for square panels — four files per panel shape cover
-the seven common grids; see [the rendered samples](#the-styles-rendered)) and slide sizes
-(`slides-half` · `slides-full`):
+(`single` · `onehalf` · `double`), single-column aspect variants
+(`single-short` · `-medium` · `-tall` — flat / golden / near-square at 88 mm), panel-grid
+heights (`1x2` · `2x3` · `1x3`, plus `…-square` variants for square panels — four
+files per panel shape cover the seven common grids; see [the rendered samples](#the-styles-rendered))
+and slide sizes (`slides-half` · `slides-full`):
 
 ```python
-plt.style.use(["paper.mplstyle", "sizes/paper-double.mplstyle"])    # same style, 180 mm wide
+plt.style.use(["paper.mplstyle", "sizes/double.mplstyle"])      # same style, 180 mm wide
+plt.style.use(["paper.mplstyle", "sizes/single-tall.mplstyle"]) # 88 mm, near-square aspect
 with plt.style.context(["slides.mplstyle", "sizes/slides-full.mplstyle"]):
-    fig, ax = plt.subplots()                                        # one full-width slide figure
+    fig, ax = plt.subplots()                                         # one full-width slide figure
+```
+
+Font sizes compose the same way. `paper.mplstyle` and `slides.mplstyle` bundle their own type, but
+the [`fontsizes/`](fontsizes) patches each set a full proportional hierarchy from one base size
+(`title = 1.2 × base`, `ticks/legend = 0.83 × base`) so you can dial the whole scale to the medium:
+[`5pt`](fontsizes/5pt.mplstyle) (dense multi-panel journal) · [`7pt`](fontsizes/7pt.mplstyle)
+(journal) · [`10pt`](fontsizes/10pt.mplstyle) (report/notebook) · [`14pt`](fontsizes/14pt.mplstyle)
+(slides) · [`18pt`](fontsizes/18pt.mplstyle) (large slides) · [`24pt`](fontsizes/24pt.mplstyle)
+(poster). Sizes are absolute points, so they hold at any `figsize`:
+
+```python
+plt.style.use(["paper.mplstyle", "sizes/2x3.mplstyle", "fontsizes/5pt.mplstyle"])  # dense grid
+plt.style.use(["slides.mplstyle", "fontsizes/18pt.mplstyle"])                      # bigger slide type
 ```
 
 For a single figure, `plt.subplots(figsize=fig_size(180))` does the same with no extra file —
@@ -633,7 +648,10 @@ rcParams; you never need it to follow the conventions.
 | **`README.md`** | The full guide — this document. |
 | **[`paper.mplstyle`](paper.mplstyle)** | Optional — bundles the guide's rcParams (DejaVu · 6 pt · Type-42 vector export · boxed inward ticks · frameless line-colored legend · high-vis cycle) into one `plt.style.use(...)` file. |
 | **[`slides.mplstyle`](slides.mplstyle)** | Optional — the same look at slide scale (18 pt body · 2.5 pt lines · 6.8 × 4.2 in): exported PNGs paste into PowerPoint at true size. |
-| **[`sizes/`](sizes)** | One-line `figure.figsize` patches that stack on a base style — `plt.style.use(["paper.mplstyle", "sizes/paper-double.mplstyle"])`. Column widths (single · onehalf · double), panel-grid heights in golden and square panel shapes (four files per shape serve the seven common grids), slide sizes (half · full). |
+| **[`fontsizes/`](fontsizes)** | Optional — standalone font-only patches, each a proportional type hierarchy from one base size (`5pt` · `7pt` · `10pt` · `14pt` · `18pt` · `24pt`), to dial the whole scale per medium; `paper.mplstyle` / `slides.mplstyle` already bundle theirs. |
+| **[`editable-text.mplstyle`](editable-text.mplstyle)** | Optional — standalone patch for editable vector text (TrueType/Type-42 PDF/PS, text-as-text SVG); `paper.mplstyle` already bundles it. |
+| **[`short-legend.mplstyle`](short-legend.mplstyle)** | Optional — standalone patch for a text-only legend: drops the handles and colors each label like its line. Goes beyond `paper.mplstyle`'s legend, which keeps the handles. |
+| **[`sizes/`](sizes)** | One-line `figure.figsize` patches that stack on a base style — `plt.style.use(["paper.mplstyle", "sizes/double.mplstyle"])`. Column widths (single · onehalf · double), single-column aspect variants (short · medium · tall), panel-grid heights in golden and square panel shapes (four files per shape serve the seven common grids), slide sizes (half · full). |
 | **[`scripts/`](scripts)** | The figure generators (`*.py`). |
 | **[`figures/`](figures)** | Their rendered output (`*.png` / `*.pdf`), embedded above. |
 
@@ -664,58 +682,61 @@ panel shape cover the seven common grids. Two shapes are bundled: **golden** pan
 
 | Serves | Golden panels | Square panels |
 |---|---|---|
-| **1×1 · 2×2 · 3×3** | [`paper-double`](sizes/paper-double.mplstyle) · 7.09 × 4.38 | [`paper-double-square`](sizes/paper-double-square.mplstyle) · 7.09 × 7.09 |
-| **2×3** | [`paper-double-2x3`](sizes/paper-double-2x3.mplstyle) · 7.09 × 2.92 | [`paper-double-square-2x3`](sizes/paper-double-square-2x3.mplstyle) · 7.09 × 4.72 |
-| **1×2 · 2×4** | [`paper-double-1x2`](sizes/paper-double-1x2.mplstyle) · 7.09 × 2.19 | [`paper-double-square-1x2`](sizes/paper-double-square-1x2.mplstyle) · 7.09 × 3.54 |
-| **1×3** | [`paper-double-1x3`](sizes/paper-double-1x3.mplstyle) · 7.09 × 1.46 | [`paper-double-square-1x3`](sizes/paper-double-square-1x3.mplstyle) · 7.09 × 2.36 |
+| **1×1 · 2×2 · 3×3** | [`double`](sizes/double.mplstyle) · 7.09 × 4.38 | [`square`](sizes/square.mplstyle) · 7.09 × 7.09 |
+| **2×3** | [`2x3`](sizes/2x3.mplstyle) · 7.09 × 2.92 | [`2x3-square`](sizes/2x3-square.mplstyle) · 7.09 × 4.72 |
+| **1×2 · 2×4** | [`1x2`](sizes/1x2.mplstyle) · 7.09 × 2.19 | [`1x2-square`](sizes/1x2-square.mplstyle) · 7.09 × 3.54 |
+| **1×3** | [`1x3`](sizes/1x3.mplstyle) · 7.09 × 1.46 | [`1x3-square`](sizes/1x3-square.mplstyle) · 7.09 × 2.36 |
 
 > `ax.set_box_aspect(1)` makes the panel *box* square — that's what these patches budget for.
 > `ax.set_aspect(1)` (= `"equal"`) instead locks *data units* equal, so the box aspect becomes
 > the y-range / x-range of your data — pick the patch row matching that ratio.
 
-(For a narrower single panel, [`paper-single`](sizes/paper-single.mplstyle) (88 mm) and
-[`paper-onehalf`](sizes/paper-onehalf.mplstyle) (120 mm) patch the width instead.)
+(For a narrower single panel, [`single`](sizes/single.mplstyle) (88 mm) and
+[`onehalf`](sizes/onehalf.mplstyle) (120 mm) patch the width instead. To vary a
+single-column panel's *aspect* rather than its width, [`single-short`](sizes/single-short.mplstyle)
+· [`-medium`](sizes/single-medium.mplstyle) · [`-tall`](sizes/single-tall.mplstyle)
+give 88 mm at 0.50 / golden / 1.0 height.)
 
 All seven grids at true relative size:
 
-<img src="figures/size_sample_1x1.png" width="680" alt="A single full-width panel (7.09 × 4.38 in) under paper-double.">
+<img src="figures/size_sample_1x1.png" width="680" alt="A single full-width panel (7.09 × 4.38 in) under double.">
 
-`plt.subplots(1, 1)` under `paper-double` — one full-width golden panel.
+`plt.subplots(1, 1)` under `double` — one full-width golden panel.
 
 <img src="figures/size_sample_2x2.png" width="680" alt="A 2×2 panel grid in the same 7.09 × 4.38 in figsize — four golden panels of 3.54 × 2.19 in, lettered a–d.">
 
-`plt.subplots(2, 2)` under the **same** `paper-double` — panels 3.54 × 2.19 in.
+`plt.subplots(2, 2)` under the **same** `double` — panels 3.54 × 2.19 in.
 
 <img src="figures/size_sample_3x3.png" width="680" alt="A 3×3 panel grid, again in 7.09 × 4.38 in — nine golden panels of 2.36 × 1.46 in, lettered a–i.">
 
-`plt.subplots(3, 3)` under the **same** `paper-double` again — panels 2.36 × 1.46 in.
+`plt.subplots(3, 3)` under the **same** `double` again — panels 2.36 × 1.46 in.
 
-<img src="figures/size_sample_2x3.png" width="680" alt="A 2×3 panel grid at 7.09 × 2.92 in under paper-double-2x3 — six golden panels, lettered a–f.">
+<img src="figures/size_sample_2x3.png" width="680" alt="A 2×3 panel grid at 7.09 × 2.92 in under 2x3 — six golden panels, lettered a–f.">
 
-`plt.subplots(2, 3)` under `paper-double-2x3` — panels 2.36 × 1.46 in.
+`plt.subplots(2, 3)` under `2x3` — panels 2.36 × 1.46 in.
 
-<img src="figures/size_sample_1x2.png" width="680" alt="A 1×2 panel pair at 7.09 × 2.19 in under paper-double-1x2.">
+<img src="figures/size_sample_1x2.png" width="680" alt="A 1×2 panel pair at 7.09 × 2.19 in under 1x2.">
 
-`plt.subplots(1, 2)` under `paper-double-1x2` — panels 3.54 × 2.19 in.
+`plt.subplots(1, 2)` under `1x2` — panels 3.54 × 2.19 in.
 
 <img src="figures/size_sample_2x4.png" width="680" alt="A 2×4 panel grid in the same 7.09 × 2.19 in figsize — eight golden panels of 1.77 × 1.09 in, lettered a–h.">
 
-`plt.subplots(2, 4)` under the **same** `paper-double-1x2` — panels 1.77 × 1.09 in.
+`plt.subplots(2, 4)` under the **same** `1x2` — panels 1.77 × 1.09 in.
 
-<img src="figures/size_sample_1x3.png" width="680" alt="A 1×3 panel strip at 7.09 × 1.46 in under paper-double-1x3.">
+<img src="figures/size_sample_1x3.png" width="680" alt="A 1×3 panel strip at 7.09 × 1.46 in under 1x3.">
 
-`plt.subplots(1, 3)` under `paper-double-1x3` — panels 2.36 × 1.46 in.
+`plt.subplots(1, 3)` under `1x3` — panels 2.36 × 1.46 in.
 
 And the **square-panel** variants — same grids, `ax.set_box_aspect(1)`, the `…-square…` patch
 budgeting the extra height (two examples; the other grids work the same way):
 
-<img src="figures/size_sample_square_2x2.png" width="680" alt="A 2×2 grid of square panels filling a 7.09 × 7.09 in figure under paper-double-square, each panel with box aspect 1.">
+<img src="figures/size_sample_square_2x2.png" width="680" alt="A 2×2 grid of square panels filling a 7.09 × 7.09 in figure under square, each panel with box aspect 1.">
 
-`plt.subplots(2, 2)` + `set_box_aspect(1)` under `paper-double-square` — square panels, full-width canvas.
+`plt.subplots(2, 2)` + `set_box_aspect(1)` under `square` — square panels, full-width canvas.
 
-<img src="figures/size_sample_square_2x3.png" width="680" alt="A 2×3 grid of square panels filling a 7.09 × 4.72 in figure under paper-double-square-2x3.">
+<img src="figures/size_sample_square_2x3.png" width="680" alt="A 2×3 grid of square panels filling a 7.09 × 4.72 in figure under 2x3-square.">
 
-`plt.subplots(2, 3)` + `set_box_aspect(1)` under `paper-double-square-2x3` — six square panels, no wasted width.
+`plt.subplots(2, 3)` + `set_box_aspect(1)` under `2x3-square` — six square panels, no wasted width.
 
 The slide sizes, at **½ scale** (a true-size 12-inch figure wouldn't fit on this page):
 

@@ -1,0 +1,15 @@
+# 14pt.mplstyle — slides (~14 pt base)
+# Font-size-only patch: a proportional type hierarchy (title = 1.2x base,
+# ticks/legend = 0.83x base) you stack on any base style to set absolute point
+# sizes. Sizes are in points, so they hold at any figsize. Stack AFTER the base:
+#   plt.style.use(["slides.mplstyle", "fontsizes/14pt.mplstyle"])
+
+font.size:             14
+axes.titlesize:        17
+axes.labelsize:        14
+xtick.labelsize:       12
+ytick.labelsize:       12
+legend.fontsize:       12
+legend.title_fontsize: 14
+figure.titlesize:      17
+figure.labelsize:      14

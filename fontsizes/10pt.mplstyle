@@ -1,0 +1,15 @@
+# 10pt.mplstyle — report / notebook (~10 pt base)
+# Font-size-only patch: a proportional type hierarchy (title = 1.2x base,
+# ticks/legend = 0.83x base) you stack on any base style to set absolute point
+# sizes. Sizes are in points, so they hold at any figsize. Stack AFTER the base:
+#   plt.style.use(["paper.mplstyle", "fontsizes/10pt.mplstyle"])
+
+font.size:             10
+axes.titlesize:        12
+axes.labelsize:        10
+xtick.labelsize:       8
+ytick.labelsize:       8
+legend.fontsize:       8
+legend.title_fontsize: 10
+figure.titlesize:      12
+figure.labelsize:      10

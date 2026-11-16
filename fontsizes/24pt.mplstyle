@@ -1,0 +1,15 @@
+# 24pt.mplstyle — poster (~24 pt base)
+# Font-size-only patch: a proportional type hierarchy (title = 1.2x base,
+# ticks/legend = 0.83x base) you stack on any base style to set absolute point
+# sizes. Sizes are in points, so they hold at any figsize. Stack AFTER the base:
+#   plt.style.use(["slides.mplstyle", "fontsizes/24pt.mplstyle"])
+
+font.size:             24
+axes.titlesize:        29
+axes.labelsize:        24
+xtick.labelsize:       20
+ytick.labelsize:       20
+legend.fontsize:       20
+legend.title_fontsize: 24
+figure.titlesize:      29
+figure.labelsize:      24

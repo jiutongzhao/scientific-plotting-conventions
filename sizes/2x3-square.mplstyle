@@ -1,5 +1,5 @@
 # Size patch — stack AFTER the base style (later entries override earlier ones):
-#   plt.style.use(["paper.mplstyle", "sizes/paper-double-square-2x3.mplstyle"])
+#   plt.style.use(["paper.mplstyle", "sizes/2x3-square.mplstyle"])
 # SQUARE panels: pair with ax.set_box_aspect(1) on each panel.
 # Height rule: height = width x panel_aspect x rows/cols, panel_aspect = 1,
 # rows:cols = 2:3 — a 2x3 grid of square panels.

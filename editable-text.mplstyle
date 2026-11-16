@@ -1,0 +1,11 @@
+# editable-text.mplstyle — keep text editable in vector output
+# Embed fonts as TrueType (Type 42) instead of Type 3 so text in saved PDF/PS
+# stays selectable and editable in Illustrator/Inkscape (a common journal
+# artwork requirement), and keep SVG text as text. Standalone font-only patch;
+# paper.mplstyle already bundles these. Stack AFTER the base style:
+#   plt.style.use(["paper.mplstyle", "editable-text.mplstyle"])
+# Note: only affects matplotlib-rendered text; with text.usetex LaTeX embeds the fonts.
+
+pdf.fonttype:          42          # TrueType (editable), NOT Type 3
+ps.fonttype:           42
+svg.fonttype:          none        # keep SVG text as text

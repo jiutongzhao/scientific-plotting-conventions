@@ -9,10 +9,10 @@ each through the sizes/ patch that serves it, stacked on paper.mplstyle:
 so grids with the same rows:cols ratio share one patch file, and four files
 cover all seven grids:
 
-  * paper-double          (7.087 x 4.38) — 1x1, 2x2, 3x3
-  * paper-double-2x3      (7.087 x 2.92) — 2x3
-  * paper-double-1x2      (7.087 x 2.19) — 1x2, 2x4
-  * paper-double-1x3      (7.087 x 1.46) — 1x3
+  * double   (7.087 x 4.38) — 1x1, 2x2, 3x3
+  * 2x3      (7.087 x 2.92) — 2x3
+  * 1x2      (7.087 x 2.19) — 1x2, 2x4
+  * 1x3      (7.087 x 1.46) — 1x3
 
 Outputs size_sample_<rows>x<cols>.png/.pdf per grid, plus the two slide-size
 samples (slides-half, slides-full) on slides.mplstyle. All PNGs export at the
@@ -31,15 +31,15 @@ SQUARE_GRIDS = [(2, 2), (2, 3)]   # two representative square-panel demos
 
 # rows:cols ratio -> the one patch that serves every grid with that ratio
 PATCH_BY_RATIO = {
-    Fraction(1, 1): "paper-double",
-    Fraction(2, 3): "paper-double-2x3",
-    Fraction(1, 2): "paper-double-1x2",
-    Fraction(1, 3): "paper-double-1x3",
+    Fraction(1, 1): "double",
+    Fraction(2, 3): "2x3",
+    Fraction(1, 2): "1x2",
+    Fraction(1, 3): "1x3",
 }
 # same classes for SQUARE panels (panel_aspect = 1 instead of golden);
-# use together with ax.set_box_aspect(1)
+# use together with ax.set_box_aspect(1). 'double' -> 'square', grids -> '<grid>-square'.
 SQUARE_PATCH_BY_RATIO = {
-    ratio: patch.replace("paper-double", "paper-double-square")
+    ratio: ("square" if patch == "double" else f"{patch}-square")
     for ratio, patch in PATCH_BY_RATIO.items()
 }
 

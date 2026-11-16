@@ -1,0 +1,5 @@
+# Size patch — stack AFTER the base style (later entries override earlier ones):
+#   plt.style.use(["paper.mplstyle", "sizes/single-medium.mplstyle"])
+# Golden aspect — identical to single; included so the short/medium/tall
+# aspect trio is complete and self-documenting.
+figure.figsize: 3.4645, 2.141    # 88 mm single column x golden ratio (0.618, medium)
