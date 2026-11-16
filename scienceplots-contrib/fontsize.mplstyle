@@ -1,0 +1,16 @@
+# Matplotlib style for journal-scale font sizes (~5-7 pt at final print size)
+# A coherent type hierarchy that scales from one base size — science.mplstyle
+# sets none of these, so figures otherwise keep matplotlib's 10 pt default,
+# which is too large once a panel is printed at single/double-column width.
+# Pair with a size patch: plt.style.use(['science', 'no-latex', '2x3', 'fontsize'])
+# (The 'slides' style carries its own larger sizes; don't stack this on it.)
+
+font.size : 7              # base; every element below scales from this
+axes.titlesize : 8
+axes.labelsize : 7
+xtick.labelsize : 6
+ytick.labelsize : 6
+legend.fontsize : 6
+legend.title_fontsize : 7
+figure.titlesize : 8       # suptitle
+figure.labelsize : 7       # supxlabel / supylabel

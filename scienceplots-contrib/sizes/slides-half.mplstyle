@@ -1,0 +1,7 @@
+# Size patch: half slide width — two figures side by side on a 16:9 slide
+# (slide is 13.33 x 7.5 in).
+#   plt.style.use(['science', 'no-latex', 'slides', 'slides-half'])
+
+figure.figsize : 6.0, 4.5
+figure.constrained_layout.use : True
+savefig.bbox : standard

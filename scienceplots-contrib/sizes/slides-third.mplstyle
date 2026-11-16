@@ -1,0 +1,8 @@
+# Size patch: one-third slide width — three figures side by side on a 16:9
+# slide (slide is 13.33 x 7.5 in). Near-square; keep the content simple —
+# the slide-scale fonts stay 16-20 pt, so there is room for one idea only.
+#   plt.style.use(['science', 'no-latex', 'slides', 'slides-third'])
+
+figure.figsize : 4.0, 4.0
+figure.constrained_layout.use : True
+savefig.bbox : standard

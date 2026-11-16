@@ -1,0 +1,8 @@
+# Size patch: full double column (180 mm), SQUARE panels, 2x3 grid.
+# Pair with ax.set_box_aspect(1) on each panel.
+# Stack AFTER a base style: plt.style.use(['science', 'no-latex', '2x3-square'])
+# Height rule: height = width x 1 x rows/cols, rows:cols = 2:3.
+
+figure.figsize : 7.087, 4.72
+figure.constrained_layout.use : True
+savefig.bbox : standard

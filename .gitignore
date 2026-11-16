@@ -12,3 +12,6 @@ venv/
 # OS cruft
 .DS_Store
 Thumbs.db
+
+# SciencePlots preview renders (regenerate with scienceplots-contrib/preview.py)
+scienceplots-contrib/preview/

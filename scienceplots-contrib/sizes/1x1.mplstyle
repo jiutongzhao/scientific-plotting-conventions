@@ -1,0 +1,8 @@
+# Size patch: full double column (180 mm), golden-ratio panels.
+# Stack AFTER a base style: plt.style.use(['science', 'no-latex', '1x1'])
+# Height rule: height = width x 0.618 x rows/cols, so this one file serves
+# every grid with rows = cols: 1x1, 2x2, 3x3.
+
+figure.figsize : 7.087, 4.38
+figure.constrained_layout.use : True
+savefig.bbox : standard

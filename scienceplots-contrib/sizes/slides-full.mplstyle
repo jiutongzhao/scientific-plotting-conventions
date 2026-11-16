@@ -1,0 +1,8 @@
+# Size patch: full slide width — a hero figure filling a 16:9 slide's
+# content area under the title (slide is 13.33 x 7.5 in).
+# Same as the slides default; included so the three widths are explicit:
+#   plt.style.use(['science', 'no-latex', 'slides', 'slides-full'])
+
+figure.figsize : 12.0, 5.3
+figure.constrained_layout.use : True
+savefig.bbox : standard

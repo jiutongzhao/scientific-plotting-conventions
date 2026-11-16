@@ -1,0 +1,10 @@
+# Matplotlib style for editable text in vector output
+# Embed fonts as TrueType (Type 42) instead of Type 3, so text in saved
+# PDF/PS files stays selectable and editable in Illustrator/Inkscape —
+# most journals ask for this. Keep SVG text as text for the same reason.
+# Note: only affects mathtext rendering (e.g. with 'no-latex'); with
+# text.usetex the fonts are embedded by LaTeX instead.
+
+pdf.fonttype : 42
+ps.fonttype : 42
+svg.fonttype : none

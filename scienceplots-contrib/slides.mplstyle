@@ -1,0 +1,58 @@
+# Matplotlib style for presentation slides (16:9 PowerPoint/Keynote)
+# Rescales the base style to slide size, like 'notebook' does for Jupyter:
+# body/axis text 16-22 pt, data lines 2.5 pt.
+#
+# Paste into PowerPoint WITHOUT resizing — how it works:
+#   * The figure is designed at its final on-slide size (figure.figsize).
+#   * savefig.bbox 'standard' keeps the saved file exactly figsize.
+#   * A saved PNG carries its dpi in the metadata; PowerPoint inserts it at
+#     pixels / dpi inches — i.e. at exactly figsize.
+#   * Bitmaps copied off the screen carry no dpi and PowerPoint assumes
+#     96 dpi — figure.dpi 96 makes that path land at true size too.
+#
+# Three slide widths (the slide is 13.33 x 7.5 in; content ~12.2 in wide):
+#   slides-full  : 12.0 x 5.3  — hero figure, fills the content area (default)
+#   slides-half  :  6.0 x 4.5  — two figures side by side
+#   slides-third :  4.0 x 4.0  — three figures side by side
+# Stack one on top: plt.style.use(['science', 'no-latex', 'slides', 'slides-half'])
+
+# Set default figure size: full slide width (= the slides-full patch)
+figure.figsize : 12.0, 5.3
+figure.dpi : 96
+figure.constrained_layout.use : True
+
+# Fontsizes
+font.size : 18
+axes.titlesize : 22
+axes.labelsize : 20
+xtick.labelsize : 16
+ytick.labelsize : 16
+legend.fontsize : 18
+legend.title_fontsize : 18
+
+# Set x axis
+xtick.major.size : 6
+xtick.major.width : 1.2
+xtick.minor.size : 3
+xtick.minor.width : 1.2
+
+# Set y axis
+ytick.major.size : 6
+ytick.major.width : 1.2
+ytick.minor.size : 3
+ytick.minor.width : 1.2
+
+# Set line widths
+axes.linewidth : 1.2
+grid.linewidth : 1.0
+lines.linewidth : 2.5
+lines.markersize : 8
+
+# Use sans-serif fonts
+font.family : sans-serif
+mathtext.fontset : dejavusans
+text.usetex : False
+
+# Export at exact figure size
+savefig.dpi : 300
+savefig.bbox : standard
